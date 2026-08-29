@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+:root {
+  --fondo: #ffffff;
+  --texto: #111111;
+  --tenue: #6b7280;
+  --linea: #e5e7eb;
+  --tarjeta: #ffffff;
+  --acento: #e11d2e; /* rojo señal: WhatsApp, ofertas, CTA */
+  --acento-hover: #b8161f;
+}
+
+@theme inline {
+  --color-fondo: var(--fondo);
+  --color-texto: var(--texto);
+  --color-tenue: var(--tenue);
+  --color-linea: var(--linea);
+  --color-tarjeta: var(--tarjeta);
+  --color-acento: var(--acento);
+  --color-acento-hover: var(--acento-hover);
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #0b0b0c;
+    --texto: #f4f4f5;
+    --tenue: #9ca3af;
+    --linea: #26262a;
+    --tarjeta: #141416;
+  }
+}
+
+* {
+  border-color: var(--linea);
+}
+
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
