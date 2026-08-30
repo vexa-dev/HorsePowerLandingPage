@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -9,6 +8,7 @@ import {
   precioMostrado,
 } from "@/lib/tipos";
 import { FichaProducto } from "@/components/FichaProducto";
+import { GaleriaProducto } from "@/components/GaleriaProducto";
 
 export const revalidate = 1800;
 export const dynamicParams = true;
@@ -54,7 +54,7 @@ export default async function ProductoPage({
     "@type": "Product",
     name: p.nombre,
     category: nombreCategoria(p.categoria),
-    image: p.foto ? [`/${p.foto}`] : undefined,
+    image: p.fotos.length ? p.fotos.map((f) => `/${f}`) : undefined,
     offers: precio
       ? {
           "@type": "Offer",
@@ -80,18 +80,7 @@ export default async function ProductoPage({
       </p>
 
       <div className="grid gap-8 md:grid-cols-2">
-        <div className="relative aspect-square overflow-hidden rounded-lg border bg-linea/40">
-          {p.foto && (
-            <Image
-              src={`/${p.foto}`}
-              alt={p.nombre}
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, 500px"
-              className="object-cover"
-            />
-          )}
-        </div>
+        <GaleriaProducto fotos={p.fotos} alt={p.nombre} />
 
         <div>
           <h1 className="text-2xl font-black">{p.nombre}</h1>

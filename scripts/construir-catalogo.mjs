@@ -344,7 +344,7 @@ function aFilas(accs) {
       colores: [...new Set(colores)].join(", "),
       tallas: tallas.join(", "),
       foto: fotos[0] ? `${fotos[0]}.webp` : "",
-      fotos_disponibles: fotos.length,
+      fotos: fotos.map((f) => `${f}.webp`).join(", "),
       destacado_hp: acc.destacadoHP ? "si" : "",
       en_excel: acc.enExcel ? "si" : "no",
     });

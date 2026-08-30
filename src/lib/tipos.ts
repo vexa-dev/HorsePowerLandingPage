@@ -50,6 +50,15 @@ export const FilaCatalogo = z.object({
   colores: listaSeparada,
   tallas: listaSeparada,
   foto: z.string().optional().default(""),
+  fotos: z
+    .string()
+    .optional()
+    .transform((v) =>
+      (v ?? "")
+        .split(/[,;]/)
+        .map((s) => s.trim())
+        .filter(Boolean),
+    ),
   destacado_hp: booleano,
 });
 
@@ -64,16 +73,29 @@ export interface Producto {
   precioOferta?: number;
   colores: string[];
   tallas: string[];
-  foto?: string; // ruta relativa dentro de /public, p. ej. "productos/xxx.webp"
+  foto?: string; // foto principal, ruta relativa dentro de /public
+  fotos: string[]; // todas las fotos del modelo (para el carrusel)
   destacadoHP: boolean;
 }
 
+function rutaFoto(nombre: string): string {
+  const n = nombre.trim();
+  return n.startsWith("productos/") ? n : `productos/${n}`;
+}
+
 export function aProducto(fila: z.infer<typeof FilaCatalogo>): Producto {
-  const foto = fila.foto?.trim()
-    ? fila.foto.startsWith("productos/")
-      ? fila.foto
-      : `productos/${fila.foto}`
-    : undefined;
+  const lista = (fila.fotos.length
+    ? fila.fotos
+    : fila.foto?.trim()
+      ? [fila.foto]
+      : []
+  ).map(rutaFoto);
+  // la columna `foto` (si existe) manda como principal
+  const principal = fila.foto?.trim() ? rutaFoto(fila.foto) : lista[0];
+  const fotos = principal
+    ? [principal, ...lista.filter((f) => f !== principal)]
+    : [];
+  const foto = fotos[0];
   return {
     slug: fila.slug.trim(),
     nombre: fila.nombre.trim(),
@@ -89,6 +111,7 @@ export function aProducto(fila: z.infer<typeof FilaCatalogo>): Producto {
     colores: fila.colores,
     tallas: fila.tallas,
     foto,
+    fotos,
     destacadoHP: fila.destacado_hp,
   };
 }
