@@ -6,7 +6,13 @@ import {
   type Producto,
 } from "@/lib/tipos";
 
-export function TarjetaProducto({ producto }: { producto: Producto }) {
+export function TarjetaProducto({
+  producto,
+  prioridad = false,
+}: {
+  producto: Producto;
+  prioridad?: boolean;
+}) {
   const precio = precioMostrado(producto);
   const enOferta = producto.precioOferta != null;
 
@@ -21,6 +27,7 @@ export function TarjetaProducto({ producto }: { producto: Producto }) {
             src={`/${producto.foto}`}
             alt={producto.nombre}
             fill
+            priority={prioridad}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
             className="object-cover transition group-hover:scale-[1.02]"
           />

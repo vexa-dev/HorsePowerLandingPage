@@ -63,8 +63,8 @@ export default async function Home() {
         <section className="py-10">
           <h2 className="mb-4 text-lg font-bold">Destacados</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {destacados.map((p) => (
-              <TarjetaProducto key={p.slug} producto={p} />
+            {destacados.map((p, i) => (
+              <TarjetaProducto key={p.slug} producto={p} prioridad={i < 4} />
             ))}
           </div>
         </section>

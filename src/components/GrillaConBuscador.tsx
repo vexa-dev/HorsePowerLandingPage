@@ -75,8 +75,8 @@ export function GrillaConBuscador({
         </p>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {resultado.map((p) => (
-            <TarjetaProducto key={p.slug} producto={p} />
+          {resultado.map((p, i) => (
+            <TarjetaProducto key={p.slug} producto={p} prioridad={i < 4} />
           ))}
         </div>
       )}
