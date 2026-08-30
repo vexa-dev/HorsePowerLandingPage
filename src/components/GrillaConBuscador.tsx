@@ -1,85 +1,118 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import Fuse from "fuse.js";
+import { useMemo } from "react";
 import type { Producto } from "@/lib/tipos";
+import { filtrarProductos } from "@/lib/catalogo-filtros";
+import { PanelFiltrosCatalogo } from "./PanelFiltrosCatalogo";
+import { useFiltrosCatalogo } from "./useFiltrosCatalogo";
 import { TarjetaProducto } from "./TarjetaProducto";
 
-export function GrillaConBuscador({
-  productos,
-  conFiltroSubcategoria = true,
-}: {
-  productos: Producto[];
-  conFiltroSubcategoria?: boolean;
-}) {
-  const [q, setQ] = useState("");
-  const [sub, setSub] = useState<string>("");
-
-  const subcategorias = useMemo(
-    () =>
-      [...new Set(productos.map((p) => p.subcategoria).filter(Boolean))].sort(),
-    [productos],
-  );
+export function GrillaConBuscador({ productos }: { productos: Producto[] }) {
+  const { filtros, actualizarFiltros, limpiarFiltros } = useFiltrosCatalogo({
+    incluirCategoria: false,
+  });
 
   const fuse = useMemo(
     () =>
       new Fuse(productos, {
-        keys: ["nombre", "subcategoria", "colores", "genero", "nombreInterno"],
+        keys: [
+          "nombre",
+          "nombreInterno",
+          "categoria",
+          "subcategoria",
+          "genero",
+          "colores",
+          "tallas",
+        ],
         threshold: 0.4,
         ignoreLocation: true,
       }),
     [productos],
   );
 
-  const resultado = useMemo(() => {
-    let lista = q.trim()
-      ? fuse.search(q.trim()).map((r) => r.item)
+  const resultadoBusqueda = useMemo(() => {
+    const termino = filtros.q.trim();
+    return termino
+      ? fuse.search(termino).map((resultado) => resultado.item)
       : productos;
-    if (sub) lista = lista.filter((p) => p.subcategoria === sub);
-    return lista;
-  }, [q, sub, fuse, productos]);
+  }, [filtros.q, fuse, productos]);
+
+  const resultado = useMemo(
+    () =>
+      filtrarProductos(
+        resultadoBusqueda,
+        { ...filtros, q: "" },
+        { incluirCategoria: false },
+      ),
+    [filtros, resultadoBusqueda],
+  );
 
   return (
-    <div>
-      <div className="mb-5 flex flex-wrap items-center gap-3">
-        <input
-          type="search"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Buscar producto, color…"
-          className="min-w-0 flex-1 rounded-md border bg-tarjeta px-3 py-2 text-sm outline-none focus:border-texto"
-        />
-        {conFiltroSubcategoria && subcategorias.length > 1 && (
-          <select
-            value={sub}
-            onChange={(e) => setSub(e.target.value)}
-            className="rounded-md border bg-tarjeta px-3 py-2 text-sm"
-          >
-            <option value="">Todo</option>
-            {subcategorias.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+    <div className="lg:grid lg:grid-cols-[minmax(15rem,18rem)_minmax(0,1fr)] lg:items-start lg:gap-8">
+      <PanelFiltrosCatalogo
+        productos={productos}
+        productosParaOpciones={resultadoBusqueda}
+        filtros={filtros}
+        incluirCategoria={false}
+        resultadoCount={resultado.length}
+        onChange={actualizarFiltros}
+        onClear={limpiarFiltros}
+      />
 
-      <p className="mb-3 text-xs text-tenue">
-        {resultado.length} producto{resultado.length === 1 ? "" : "s"}
-      </p>
+      <section className="mt-6 min-w-0 lg:mt-0" aria-label="Resultados de productos">
+        <form
+          role="search"
+          onSubmit={(event) => event.preventDefault()}
+          className="flex flex-col gap-2"
+        >
+          <label htmlFor="buscar-productos" className="text-sm font-semibold">
+            Buscar productos
+          </label>
+          <input
+            id="buscar-productos"
+            type="search"
+            value={filtros.q}
+            onChange={(event) =>
+              actualizarFiltros({ ...filtros, q: event.target.value })
+            }
+            placeholder="Nombre, color, talla o tipo"
+            className="min-h-12 w-full rounded-xl border bg-tarjeta px-4 text-sm outline-none focus:border-texto focus:ring-2 focus:ring-acento/20"
+          />
+        </form>
 
-      {resultado.length === 0 ? (
-        <p className="py-16 text-center text-tenue">
-          No encontramos productos con esos filtros.
+        <p className="mt-5 text-sm text-tenue" aria-live="polite">
+          {resultado.length} producto{resultado.length === 1 ? "" : "s"}
         </p>
-      ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {resultado.map((p, i) => (
-            <TarjetaProducto key={p.slug} producto={p} prioridad={i < 4} />
-          ))}
-        </div>
-      )}
+
+        {resultado.length === 0 ? (
+          <div className="mt-5 rounded-2xl bg-superficie px-6 py-14 text-center">
+            <p className="text-lg font-semibold">
+              No encontramos productos con esos filtros.
+            </p>
+            <p className="mt-2 text-sm text-tenue">
+              Prueba con otro término o elimina alguno de los filtros activos.
+            </p>
+            <button
+              type="button"
+              onClick={limpiarFiltros}
+              className="boton-oscuro mt-5 min-h-11 px-4 py-2.5"
+            >
+              Ver todos los productos
+            </button>
+          </div>
+        ) : (
+          <div className="mt-6 grid grid-cols-2 items-start gap-3 sm:grid-cols-3 lg:gap-5">
+            {resultado.map((producto, index) => (
+              <TarjetaProducto
+                key={producto.slug}
+                producto={producto}
+                prioridad={index < 4}
+              />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

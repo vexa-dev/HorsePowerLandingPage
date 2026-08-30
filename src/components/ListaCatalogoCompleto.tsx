@@ -1,110 +1,166 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
-import { linkConsultaProducto } from "@/lib/whatsapp";
+import { filtrarProductos } from "@/lib/catalogo-filtros";
 import { eventoWhatsApp } from "@/lib/analitica";
-import { textoVisible } from "@/lib/tipos";
+import { linkConsultaProducto } from "@/lib/whatsapp";
+import {
+  formatearSoles,
+  nombreCategoria,
+  precioMostrado,
+  textoVisible,
+  type Producto,
+} from "@/lib/tipos";
+import { PanelFiltrosCatalogo } from "./PanelFiltrosCatalogo";
+import { useFiltrosCatalogo } from "./useFiltrosCatalogo";
 
-interface Fila {
-  slug: string;
-  nombre: string;
-  categoria: string;
-  subcategoria: string;
-  precio: string;
-  tieneFoto: boolean;
-}
-
-export function ListaCatalogoCompleto({ filas }: { filas: Fila[] }) {
-  const id = useId().replace(/:/g, "");
-  const [q, setQ] = useState("");
-
-  const filtradas = useMemo(() => {
-    const t = q.trim().toLowerCase();
-    if (!t) return filas;
-    return filas.filter((f) =>
-      `${f.nombre} ${f.categoria} ${f.subcategoria}`.toLowerCase().includes(t),
-    );
-  }, [q, filas]);
+export function ListaCatalogoCompleto({
+  productos,
+}: {
+  productos: Producto[];
+}) {
+  const { filtros, actualizarFiltros, limpiarFiltros } = useFiltrosCatalogo();
+  const resultadoBusqueda = useMemo(
+    () =>
+      filtrarProductos(productos, {
+        q: filtros.q,
+        categoria: [],
+        subcategoria: [],
+        genero: [],
+        color: [],
+        talla: [],
+      }),
+    [filtros.q, productos],
+  );
+  const resultado = useMemo(
+    () => filtrarProductos(productos, filtros),
+    [filtros, productos],
+  );
 
   return (
-    <div>
-      <label htmlFor={`${id}-q`} className="mb-2 block text-sm font-semibold">
-        Buscar en el catálogo
-      </label>
-      <input
-        id={`${id}-q`}
-        type="search"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Nombre, categoría o tipo"
-        className="mb-5 min-h-12 w-full rounded-xl border bg-tarjeta px-4 text-sm outline-none focus:border-texto focus:ring-2 focus:ring-acento/20"
+    <div className="lg:grid lg:grid-cols-[minmax(15rem,18rem)_minmax(0,1fr)] lg:items-start lg:gap-8">
+      <PanelFiltrosCatalogo
+        productos={productos}
+        productosParaOpciones={resultadoBusqueda}
+        filtros={filtros}
+        resultadoCount={resultado.length}
+        onChange={actualizarFiltros}
+        onClear={limpiarFiltros}
       />
-      <p className="mb-3 text-sm text-tenue" aria-live="polite">
-        {filtradas.length} resultado{filtradas.length === 1 ? "" : "s"}
-      </p>
-      <div className="overflow-x-auto">
-        <table className="w-full border-separate border-spacing-y-1 text-left text-sm">
-          <caption className="sr-only">Catálogo completo de HorsePower</caption>
-          <thead className="text-xs uppercase tracking-[0.12em] text-tenue">
-            <tr>
-              <th className="px-3 py-3 pr-4">Modelo</th>
-              <th className="px-3 py-3 pr-4">Categoría</th>
-              <th className="px-3 py-3 pr-4">Precio</th>
-              <th className="px-3 py-3" />
-            </tr>
-          </thead>
-          <tbody>
-            {filtradas.map((f) => (
-              <tr
-                key={f.slug}
-                className="bg-superficie/60 transition hover:bg-superficie"
-              >
-                <td className="px-3 py-4 pr-4 font-semibold">
-                  {textoVisible(f.nombre)}
-                </td>
-                <td className="px-3 py-4 pr-4 text-tenue">
-                  {f.categoria}
-                  {f.subcategoria ? ` · ${f.subcategoria}` : ""}
-                </td>
-                <td className="px-3 py-4 pr-4 tabular-nums">
-                  {f.precio || (
-                    <span className="text-tenue">Consultar</span>
-                  )}
-                </td>
-                <td className="px-3 py-4 text-right">
-                  {f.tieneFoto ? (
-                    <Link
-                      href={`/producto/${f.slug}`}
-                      className="whitespace-nowrap font-semibold text-acento hover:underline"
+
+      <section className="mt-6 min-w-0 lg:mt-0" aria-label="Catálogo completo">
+        <form
+          role="search"
+          onSubmit={(event) => event.preventDefault()}
+          className="flex flex-col gap-2"
+        >
+          <label htmlFor="buscar-catalogo" className="text-sm font-semibold">
+            Buscar en el catálogo
+          </label>
+          <input
+            id="buscar-catalogo"
+            type="search"
+            value={filtros.q}
+            onChange={(event) =>
+              actualizarFiltros({ ...filtros, q: event.target.value })
+            }
+            placeholder="Nombre, categoría, color o talla"
+            className="min-h-12 w-full rounded-xl border bg-tarjeta px-4 text-sm outline-none focus:border-texto focus:ring-2 focus:ring-acento/20"
+          />
+        </form>
+
+        <p className="mt-5 text-sm text-tenue" aria-live="polite">
+          {resultado.length} resultado{resultado.length === 1 ? "" : "s"}
+        </p>
+
+        {resultado.length === 0 ? (
+          <div className="mt-5 rounded-2xl bg-superficie px-6 py-14 text-center">
+            <p className="text-lg font-semibold">
+              No encontramos modelos con esos filtros.
+            </p>
+            <p className="mt-2 text-sm text-tenue">
+              Prueba con otra combinación o elimina los filtros activos.
+            </p>
+            <button
+              type="button"
+              onClick={limpiarFiltros}
+              className="boton-oscuro mt-5 min-h-11 px-4 py-2.5"
+            >
+              Ver todo el catálogo
+            </button>
+          </div>
+        ) : (
+          <div className="mt-5 overflow-x-auto rounded-2xl border">
+            <table className="min-w-[42rem] w-full border-separate border-spacing-y-1 text-left text-sm">
+              <caption className="sr-only">
+                Catálogo completo de HorsePower
+              </caption>
+              <thead className="text-xs uppercase tracking-[0.12em] text-tenue">
+                <tr>
+                  <th className="px-4 py-3 pr-5">Modelo</th>
+                  <th className="px-4 py-3 pr-5">Categoría</th>
+                  <th className="px-4 py-3 pr-5">Precio</th>
+                  <th className="px-4 py-3" />
+                </tr>
+              </thead>
+              <tbody>
+                {resultado.map((producto) => {
+                  const precio = precioMostrado(producto);
+
+                  return (
+                    <tr
+                      key={producto.slug}
+                      className="bg-superficie/60 transition hover:bg-superficie"
                     >
-                      Ver ficha
-                    </Link>
-                  ) : (
-                    <a
-                      href={linkConsultaProducto({
-                        nombre: f.nombre,
-                        slug: f.slug,
-                      })}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={() =>
-                        eventoWhatsApp("catalogo-completo", { producto: f.slug })
-                      }
-                      className="whitespace-nowrap font-semibold text-acento hover:underline"
-                    >
-                      Consultar
-                    </a>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {filtradas.length === 0 && (
-          <p className="py-10 text-center text-tenue">Sin resultados.</p>
+                      <td className="px-4 py-4 pr-5 font-semibold">
+                        {textoVisible(producto.nombre)}
+                      </td>
+                      <td className="px-4 py-4 pr-5 text-tenue">
+                        {nombreCategoria(producto.categoria)}
+                        {producto.subcategoria
+                          ? ` · ${textoVisible(producto.subcategoria)}`
+                          : ""}
+                      </td>
+                      <td className="px-4 py-4 pr-5 tabular-nums">
+                        {precio != null ? (
+                          formatearSoles(precio)
+                        ) : (
+                          <span className="text-tenue">Consultar</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-4 text-right">
+                        {producto.foto ? (
+                          <Link
+                            href={`/producto/${producto.slug}`}
+                            className="whitespace-nowrap font-semibold text-acento hover:underline"
+                          >
+                            Ver ficha
+                          </Link>
+                        ) : (
+                          <a
+                            href={linkConsultaProducto(producto)}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={() =>
+                              eventoWhatsApp("catalogo-completo", {
+                                producto: producto.slug,
+                              })
+                            }
+                            className="whitespace-nowrap font-semibold text-acento hover:underline"
+                          >
+                            Consultar
+                          </a>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

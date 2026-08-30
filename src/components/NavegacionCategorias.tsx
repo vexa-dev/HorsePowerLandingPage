@@ -17,7 +17,6 @@ const ICONOS: Record<CategoriaSlug, IconoCategoria> = {
   "mochilas-y-morrales": IconBackpack,
   "maletas-y-viaje": IconLuggage,
   "loncheras-y-accesorios": IconToolsKitchen2,
-  ropa: IconShirt,
 };
 
 export interface CategoriaConTotal {

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { CATEGORIAS, nombreCategoria } from "@/lib/tipos";
 import { productosPorCategoria } from "@/lib/catalogo";
 import { GrillaConBuscador } from "@/components/GrillaConBuscador";
@@ -59,7 +60,15 @@ export default async function CategoriaPage({
           </Link>
         </div>
       ) : (
-        <GrillaConBuscador productos={productos} />
+        <Suspense
+          fallback={
+            <div className="rounded-2xl bg-superficie px-6 py-14 text-center text-sm text-tenue">
+              Cargando filtros…
+            </div>
+          }
+        >
+          <GrillaConBuscador productos={productos} />
+        </Suspense>
       )}
     </div>
   );

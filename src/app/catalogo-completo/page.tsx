@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { catalogoCompleto } from "@/lib/catalogo";
-import { nombreCategoria, formatearSoles, precioMostrado } from "@/lib/tipos";
 import { ListaCatalogoCompleto } from "@/components/ListaCatalogoCompleto";
 
 export const revalidate = 1800;
@@ -14,18 +14,6 @@ export const metadata: Metadata = {
 export default async function CatalogoCompletoPage() {
   const productos = await catalogoCompleto();
 
-  const filas = productos.map((p) => {
-    const precio = precioMostrado(p);
-    return {
-      slug: p.slug,
-      nombre: p.nombre,
-      categoria: nombreCategoria(p.categoria),
-      subcategoria: p.subcategoria,
-      precio: precio != null ? formatearSoles(precio) : "",
-      tieneFoto: Boolean(p.foto),
-    };
-  });
-
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
       <header className="mb-10 max-w-2xl">
@@ -33,12 +21,20 @@ export default async function CatalogoCompletoPage() {
           Catálogo completo
         </h1>
         <p className="mt-4 leading-relaxed text-tenue">
-        {filas.length} modelos. Los que tienen foto abren su ficha; el resto se
-        consulta directo por WhatsApp.
+          {productos.length} modelos. Los que tienen foto abren su ficha; el resto se
+          consulta directo por WhatsApp.
         </p>
       </header>
       <div className="mt-6">
-        <ListaCatalogoCompleto filas={filas} />
+        <Suspense
+          fallback={
+            <div className="rounded-2xl bg-superficie px-6 py-14 text-center text-sm text-tenue">
+              Cargando filtros…
+            </div>
+          }
+        >
+          <ListaCatalogoCompleto productos={productos} />
+        </Suspense>
       </div>
     </div>
   );
