@@ -96,14 +96,18 @@ export function extraerModelo(nombre) {
     .replace(/[.\-]+/g, " ")
     .split(/\s+/)
     .filter(Boolean);
+  const combo = codigo && talla ? codigo + talla : "";
   const modelo = toks.filter((t) => {
     const clean = t.replace(/[^A-Z0-9]/g, "");
     if (!clean) return false;
     if (RUIDO.has(clean)) return false;
-    if (clean === codigo) return false;
-    if (clean === talla) return false;
+    if (clean === codigo || clean === talla || clean === combo) return false;
+    if (codigo && clean.startsWith(codigo) && clean.length <= codigo.length + 3)
+      return false;
     if (/^\d+$/.test(clean)) return false;
-    if (/^[A-Z0-9]{2,4}$/.test(clean) && clean.length <= 4 && /\d/.test(clean)) return false;
+    // token tipo código: empieza con dígito o mezcla letras+dígitos, corto
+    if (clean.length <= 6 && /\d/.test(clean) && /^[A-Z0-9]+$/.test(clean))
+      return false;
     return true;
   });
   return modelo.join(" ").trim();

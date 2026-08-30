@@ -51,11 +51,13 @@ la ruta al Excel de inventario en `EXCEL_STOCK`.
 
 ```bash
 node scripts/optimizar-fotos.mjs      # PNG -> public/productos/*.webp
-node scripts/emparejar-catalogo.mjs   # -> scripts/catalogo-borrador.csv (subir a la Sheet)
+node scripts/construir-catalogo.mjs   # Excel + fotos -> scripts/catalogo-borrador.csv
 node scripts/tabla-colores.mjs        # -> tablas de código -> color para validar
 ```
 
-`catalogo-borrador.csv` trae foto, nombre limpio y precio (cuando el Excel lo tiene).
+`construir-catalogo.mjs` toma **todos los modelos del Excel de inventario** (una fila
+por modelo, con colores y tallas agregados de sus unidades) y les pega la foto cuando
+existe. Los modelos sin foto se muestran solo en el "Catálogo completo".
 La dueña completa **precio, colores y tallas** en la Sheet.
 
 ## Deploy en Vercel
