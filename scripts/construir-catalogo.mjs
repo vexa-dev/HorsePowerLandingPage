@@ -24,9 +24,18 @@ const RUTA_EXCEL =
 const ORIGEN_FOTOS = "Fotos HorsePower";
 
 // --- utilidades ---
+function textoCelda(s) {
+  if (s == null) return "";
+  if (typeof s === "string" || typeof s === "number") return String(s);
+  if (s instanceof Date) return "";
+  if (Array.isArray(s.richText)) return s.richText.map((t) => t.text).join("");
+  if (typeof s.text === "string") return s.text;
+  if (s.result != null) return String(s.result);
+  return "";
+}
+
 const norm = (s) =>
-  (s ?? "")
-    .toString()
+  textoCelda(s)
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
     .toUpperCase()
@@ -95,14 +104,13 @@ const IGNORAR_MODELO = [
 
 function tituloModelo(baseNorm) {
   return baseNorm
-    .replace(/\bNINA\b/g, "Niña")
     .replace(/\s*-\s*[A-Z0-9]{1,3}\s*$/g, "") // quita " - ZM0", " - M" al final
     .replace(/\bS\/E\b/g, "")
     .toLowerCase()
     .replace(/\bchaqueta\b/g, "casaca")
-    .replace(/\bniña\b/g, "Niña")
     .replace(/\b\w/g, (c) => c.toUpperCase())
     .replace(/\bHp\b/g, "HP")
+    .replace(/\bnina\b/gi, "Niña")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -125,6 +133,7 @@ async function leerExcel() {
       const nombre = esCasaca ? "Casaca HorsePower" : "Polera HorsePower";
       const acc = crearAcc(nombre, "casacas-y-chompas", esCasaca ? "Casaca" : "Polera", "Unisex");
       acc.destacadoHP = true;
+      acc.enExcel = true;
       ws.eachRow((row) => {
         const v = row.values;
         const color = norm(esCasaca ? v[2] : v[3]);
@@ -160,7 +169,6 @@ async function leerExcel() {
       if (!base || base.length < 2) return;
 
       const sub = subcategoriaDe(base, hoja);
-      const nombre = `${sub === meta.sub ? "" : ""}${tituloModelo(base)}`.trim();
       const key = slugify(`${base} ${meta.genero}`);
 
       let acc = modelos.get(key);
@@ -249,54 +257,59 @@ async function leerFotos() {
   return grupos;
 }
 
-// --- 3) Fusionar Excel + fotos ---
-function fusionar(excel, fotos) {
-  const porNombre = new Map();
-  for (const acc of excel.values()) {
-    const k = acc.baseNorm.replace(/^(CHAQUETA|CASACA|MORRAL|MOCHILA|MALETA|LONCHERA|CAMISA) /, "");
-    porNombre.set(k, acc);
-  }
+// distancia de edición acotada
+function editDist(a, b, max = 2) {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+  for (let j = 0; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++)
+    for (let j = 1; j <= b.length; j++)
+      d[i][j] = Math.min(
+        d[i - 1][j] + 1,
+        d[i][j - 1] + 1,
+        d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+  return d[a.length][b.length];
+}
+
+const PREFIJO = /^(CHAQUETA|CASACA|CHOMPA|BUZO|CHALECO|MORRAL|MOCHILA|MALETA|LONCHERA|CAMISA|POLO|POLERA|TOP) /;
+const compacto = (s) => s.replace(PREFIJO, "").replace(/[^A-Z0-9]/g, "");
+
+// --- 3) Pegar las fotos a los modelos del Excel. El Excel manda:
+//     las fotos que no correspondan a ningún modelo del Excel se descartan.
+function pegarFotos(excel, fotos) {
+  const bases = [...excel.values()].map((acc) => ({
+    acc,
+    c: compacto(acc.baseNorm),
+  }));
+  const descartadas = [];
 
   for (const g of fotos.values()) {
-    const clave = g.modeloNorm.replace(
-      /^(CHAQUETA|CASACA|MORRAL|MOCHILA|MALETA|LONCHERA|CAMISA) /,
-      "",
-    );
-    let acc = porNombre.get(clave);
-    // match laxo: alguna palabra larga en común
+    const c = compacto(g.modeloNorm);
+    if (c.length < 3) {
+      descartadas.push(g);
+      continue;
+    }
+    let acc =
+      bases.find((b) => b.c === c)?.acc ||
+      bases.find(
+        (b) =>
+          (b.c.length >= 4 && c.length >= 4 && (b.c.includes(c) || c.includes(b.c))),
+      )?.acc ||
+      bases.find((b) => editDist(b.c, c, 2) <= 2)?.acc;
+
     if (!acc) {
-      for (const [k, a] of porNombre) {
-        if (k === clave || k.includes(clave) || clave.includes(k)) {
-          acc = a;
-          break;
-        }
-      }
+      descartadas.push(g);
+      continue;
     }
-    if (acc) {
-      acc.fotos.push(...g.fotos);
-      for (const c of g.codigos) {
-        acc.codigos.add(c);
-        if (LETRA_COLOR[c[0]]) acc.coloresTentativos.add(LETRA_COLOR[c[0]]);
-      }
-      for (const t of g.tallas) acc.tallas.add(t);
-    } else {
-      // modelo solo con foto (línea que no está en el Excel 2023)
-      const acc2 = crearAcc(
-        tituloModelo(g.modeloNorm),
-        g.categoria,
-        g.subcategoria,
-        g.genero,
-      );
-      acc2.fotos = [...g.fotos];
-      for (const c of g.codigos) {
-        acc2.codigos.add(c);
-        if (LETRA_COLOR[c[0]]) acc2.coloresTentativos.add(LETRA_COLOR[c[0]]);
-      }
-      for (const t of g.tallas) acc2.tallas.add(t);
-      excel.set(slugify(`${g.modeloNorm} ${g.genero} foto`), acc2);
+    acc.fotos.push(...g.fotos);
+    for (const cod of g.codigos) {
+      acc.codigos.add(cod);
+      if (LETRA_COLOR[cod[0]]) acc.coloresTentativos.add(LETRA_COLOR[cod[0]]);
     }
+    for (const t of g.tallas) acc.tallas.add(t);
   }
-  return excel;
+  return { excel, descartadas };
 }
 
 // --- 4) Escribir CSV ---
@@ -350,7 +363,7 @@ const excel = await leerExcel();
 console.log(`Excel: ${excel.size} modelos`);
 const fotos = await leerFotos();
 console.log(`Fotos: ${fotos.size} modelos fotografiados`);
-const combinado = fusionar(excel, fotos);
+const { excel: combinado, descartadas } = pegarFotos(excel, fotos);
 const filas = aFilas(combinado);
 
 const conFoto = filas.filter((f) => f.foto).length;
@@ -358,9 +371,26 @@ const conPrecio = filas.filter((f) => f.precio).length;
 
 await writeFile("scripts/catalogo-borrador.csv", Papa.unparse(filas, { quotes: true }));
 
+// reporte de fotos que no calzaron con ningún modelo del Excel
+descartadas.sort((a, b) => a.modeloNorm.localeCompare(b.modeloNorm));
+await writeFile(
+  "scripts/fotos-descartadas.csv",
+  Papa.unparse(
+    descartadas.map((g) => ({
+      modelo: g.modeloNorm,
+      subcategoria: g.subcategoria,
+      genero: g.genero,
+      fotos: g.fotos.join(", "),
+    })),
+    { quotes: true },
+  ),
+);
+
 console.log(
-  `\n${filas.length} modelos -> scripts/catalogo-borrador.csv\n` +
-    `  ${conFoto} con foto (tarjeta)\n` +
-    `  ${filas.length - conFoto} sin foto (van al "Catálogo completo")\n` +
-    `  ${conPrecio} con precio (del Excel); el resto la dueña lo completa`,
+  `\n${filas.length} modelos (todos del Excel) -> scripts/catalogo-borrador.csv\n` +
+    `  ${conFoto} con foto\n` +
+    `  ${filas.length - conFoto} sin foto (solo en "Catálogo completo")\n` +
+    `  ${conPrecio} con precio del Excel\n` +
+    `\n${descartadas.length} modelos fotografiados NO están en el Excel` +
+    ` -> scripts/fotos-descartadas.csv (revisar por si falta alguno)`,
 );

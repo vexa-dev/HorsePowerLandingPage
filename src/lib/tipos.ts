@@ -5,7 +5,6 @@ export const CATEGORIAS = [
   { slug: "mochilas-y-morrales", nombre: "Mochilas y Morrales" },
   { slug: "maletas-y-viaje", nombre: "Maletas y Viaje" },
   { slug: "loncheras-y-accesorios", nombre: "Loncheras y Accesorios" },
-  { slug: "ropa", nombre: "Ropa" },
 ] as const;
 
 export type CategoriaSlug = (typeof CATEGORIAS)[number]["slug"];
