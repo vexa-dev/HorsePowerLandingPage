@@ -27,12 +27,16 @@ export default async function CatalogoCompletoPage() {
   });
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
-      <h1 className="text-2xl font-black">Catálogo completo</h1>
-      <p className="mt-2 text-sm text-tenue">
+    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      <header className="mb-10 max-w-2xl">
+        <h1 className="text-4xl font-black tracking-[-0.05em] sm:text-5xl">
+          Catálogo completo
+        </h1>
+        <p className="mt-4 leading-relaxed text-tenue">
         {filas.length} modelos. Los que tienen foto abren su ficha; el resto se
         consulta directo por WhatsApp.
-      </p>
+        </p>
+      </header>
       <div className="mt-6">
         <ListaCatalogoCompleto filas={filas} />
       </div>

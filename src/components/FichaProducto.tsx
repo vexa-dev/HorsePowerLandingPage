@@ -18,12 +18,17 @@ export function FichaProducto({ producto }: { producto: Producto }) {
   const faltaElegir =
     (producto.colores.length > 0 && !color) ||
     (producto.tallas.length > 0 && !talla);
+  const faltantes = [
+    producto.colores.length > 0 && !color ? "color" : "",
+    producto.tallas.length > 0 && !talla ? "talla" : "",
+  ].filter(Boolean);
 
   function alAgregar() {
     agregar({
       slug: producto.slug,
       nombre: producto.nombre,
       precio: precioMostrado(producto),
+      foto: producto.foto,
       color: color || undefined,
       talla: talla || undefined,
       cantidad,
@@ -32,7 +37,7 @@ export function FichaProducto({ producto }: { producto: Producto }) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {producto.colores.length > 0 && (
         <Opciones
           etiqueta="Color"
@@ -50,20 +55,28 @@ export function FichaProducto({ producto }: { producto: Producto }) {
         />
       )}
 
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-medium">Cantidad</span>
-        <div className="flex items-center rounded-md border">
+      <div className="flex items-center gap-4">
+        <span className="text-sm font-semibold">Cantidad</span>
+        <div
+          role="group"
+          aria-label="Cantidad"
+          className="flex items-center rounded-xl border bg-tarjeta"
+        >
           <button
+            type="button"
             onClick={() => setCantidad((c) => Math.max(1, c - 1))}
-            className="px-3 py-1.5 text-lg"
+            className="min-h-11 min-w-11 text-lg hover:bg-superficie"
             aria-label="Menos"
           >
             −
           </button>
-          <span className="w-8 text-center">{cantidad}</span>
+          <span className="w-10 text-center font-semibold tabular-nums">
+            {cantidad}
+          </span>
           <button
+            type="button"
             onClick={() => setCantidad((c) => c + 1)}
-            className="px-3 py-1.5 text-lg"
+            className="min-h-11 min-w-11 text-lg hover:bg-superficie"
             aria-label="Más"
           >
             +
@@ -73,24 +86,32 @@ export function FichaProducto({ producto }: { producto: Producto }) {
 
       <div className="flex flex-col gap-2 pt-2">
         <button
+          type="button"
           onClick={alAgregar}
           disabled={faltaElegir}
-          className="rounded-md border border-texto px-4 py-2.5 font-semibold transition enabled:hover:bg-texto enabled:hover:text-fondo disabled:opacity-40"
+          className="boton-oscuro min-h-12 px-4 py-3 transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-45"
         >
-          {faltaElegir ? "Elige color y talla" : "Agregar al carrito"}
+          {faltaElegir
+            ? `Elige ${faltantes.join(" y ")}`
+            : "Agregar al carrito"}
         </button>
 
         {agregado && (
-          <div className="flex gap-2">
+          <div
+            role="status"
+            className="flex flex-col gap-2 rounded-xl bg-superficie p-3 sm:flex-row"
+          >
             <button
+              type="button"
               onClick={() => router.push("/carrito")}
-              className="flex-1 rounded-md bg-texto px-4 py-2.5 font-semibold text-fondo"
+              className="boton-oscuro min-h-11 flex-1 px-4 py-2.5"
             >
               Ir al carrito
             </button>
             <button
+              type="button"
               onClick={() => setAgregado(false)}
-              className="rounded-md border px-4 py-2.5"
+              className="min-h-11 rounded-lg border px-4 py-2.5 font-semibold hover:border-texto"
             >
               Seguir viendo
             </button>
@@ -122,24 +143,26 @@ function Opciones({
   onChange: (v: string) => void;
 }) {
   return (
-    <div>
-      <p className="mb-2 text-sm font-medium">{etiqueta}</p>
+    <fieldset>
+      <legend className="mb-3 text-sm font-semibold">{etiqueta}</legend>
       <div className="flex flex-wrap gap-2">
         {valores.map((v) => (
           <button
             key={v}
+            type="button"
             onClick={() => onChange(v)}
+            aria-pressed={activo === v}
             className={
-              "rounded-md border px-3 py-1.5 text-sm " +
+              "min-h-11 rounded-lg border px-4 py-2 text-sm font-medium " +
               (activo === v
-                ? "border-texto bg-texto text-fondo"
-                : "hover:border-texto")
+                ? "boton-oscuro border-transparent"
+                : "bg-tarjeta hover:border-texto hover:bg-superficie")
             }
           >
             {v}
           </button>
         ))}
       </div>
-    </div>
+    </fieldset>
   );
 }

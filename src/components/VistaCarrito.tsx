@@ -1,23 +1,38 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCarrito } from "@/lib/carrito";
 import { linkCarrito } from "@/lib/whatsapp";
-import { formatearSoles } from "@/lib/tipos";
+import { formatearSoles, textoVisible } from "@/lib/tipos";
 import { BotonWhatsApp } from "./BotonWhatsApp";
 
 export function VistaCarrito() {
   const { items, cambiarCantidad, quitar, vaciar, listo } = useCarrito();
 
-  if (!listo) return <p className="text-tenue">Cargando…</p>;
+  if (!listo) {
+    return (
+      <div
+        role="status"
+        aria-label="Cargando carrito"
+        className="space-y-3 motion-safe:animate-pulse"
+      >
+        <div className="h-24 rounded-2xl bg-superficie" />
+        <div className="h-24 rounded-2xl bg-superficie" />
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
-      <div className="rounded-lg border p-8 text-center">
-        <p className="text-tenue">Tu carrito está vacío.</p>
+      <div className="rounded-2xl bg-superficie px-6 py-14 text-center">
+        <p className="text-2xl font-bold tracking-tight">Tu carrito está vacío</p>
+        <p className="mx-auto mt-2 max-w-sm leading-relaxed text-tenue">
+          Revisa el catálogo y agrega los modelos que quieras consultar.
+        </p>
         <Link
           href="/"
-          className="mt-4 inline-block rounded-md bg-texto px-4 py-2 font-semibold text-fondo"
+          className="boton-oscuro mt-6 inline-flex min-h-12 items-center px-5 py-3"
         >
           Ver catálogo
         </Link>
@@ -32,69 +47,109 @@ export function VistaCarrito() {
   const todosConPrecio = items.every((x) => x.precio);
 
   return (
-    <div className="space-y-4">
-      <ul className="divide-y rounded-lg border">
-        {items.map((it, i) => (
-          <li key={i} className="flex flex-wrap items-center gap-3 p-3">
-            <div className="min-w-0 flex-1">
-              <p className="font-medium">{it.nombre}</p>
-              <p className="text-xs text-tenue">
-                {[it.color, it.talla].filter(Boolean).join(" / ") || "—"}
-                {it.precio
-                  ? ` · ${formatearSoles(it.precio)} c/u`
-                  : " · precio a confirmar"}
-              </p>
-            </div>
-            <div className="flex items-center rounded-md border">
-              <button
-                onClick={() => cambiarCantidad(i, it.cantidad - 1)}
-                className="px-2.5 py-1 text-lg"
-                aria-label="Menos"
-              >
-                −
-              </button>
-              <span className="w-8 text-center text-sm">{it.cantidad}</span>
-              <button
-                onClick={() => cambiarCantidad(i, it.cantidad + 1)}
-                className="px-2.5 py-1 text-lg"
-                aria-label="Más"
-              >
-                +
-              </button>
-            </div>
-            <button
-              onClick={() => quitar(i)}
-              className="text-xs text-tenue hover:text-acento"
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+      <div className="space-y-3">
+        <ul className="space-y-3">
+          {items.map((it, i) => (
+            <li
+              key={`${it.slug}-${it.color ?? ""}-${it.talla ?? ""}-${i}`}
+              className="flex flex-wrap items-center gap-4 rounded-2xl bg-tarjeta p-4 shadow-[0_18px_40px_-32px_rgb(21_22_25/0.55)]"
             >
-              Quitar
-            </button>
-          </li>
-        ))}
-      </ul>
+              {it.foto ? (
+                <div className="product-stage relative size-20 shrink-0 overflow-hidden rounded-xl">
+                  <Image
+                    src={`/${it.foto}`}
+                    alt=""
+                    fill
+                    sizes="80px"
+                    className="object-contain p-2"
+                  />
+                </div>
+              ) : (
+                <div className="size-20 shrink-0 rounded-xl bg-superficie" />
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold">{textoVisible(it.nombre)}</p>
+                <p className="mt-1 text-sm text-tenue">
+                  {[it.color, it.talla].filter(Boolean).join(" / ") ||
+                    "Sin variante"}
+                  {it.precio
+                    ? ` · ${formatearSoles(it.precio)} c/u`
+                    : " · precio a confirmar"}
+                </p>
+              </div>
+              <div
+                role="group"
+                aria-label={`Cantidad de ${textoVisible(it.nombre)}`}
+                className="flex items-center rounded-xl border bg-tarjeta"
+              >
+                <button
+                  type="button"
+                  onClick={() => cambiarCantidad(i, it.cantidad - 1)}
+                  className="min-h-11 min-w-11 text-lg hover:bg-superficie"
+                  aria-label="Menos"
+                >
+                  −
+                </button>
+                <span className="w-9 text-center text-sm font-semibold tabular-nums">
+                  {it.cantidad}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => cambiarCantidad(i, it.cantidad + 1)}
+                  className="min-h-11 min-w-11 text-lg hover:bg-superficie"
+                  aria-label="Más"
+                >
+                  +
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => quitar(i)}
+                className="min-h-11 px-2 text-sm font-semibold text-tenue hover:text-acento"
+              >
+                Quitar
+              </button>
+            </li>
+          ))}
+        </ul>
 
-      <div className="flex items-center justify-between">
-        <button onClick={vaciar} className="text-sm text-tenue hover:text-acento">
+        <button
+          type="button"
+          onClick={vaciar}
+          className="min-h-11 text-sm font-semibold text-tenue hover:text-acento"
+        >
           Vaciar carrito
         </button>
-        {todosConPrecio && (
-          <p className="text-lg font-bold">
-            Total estimado: {formatearSoles(total)}
-          </p>
-        )}
       </div>
 
-      <BotonWhatsApp
-        href={linkCarrito(items)}
-        origen="carrito"
-        detalle={{ items: items.length }}
-        className="w-full text-base"
-      >
-        Finalizar compra por WhatsApp
-      </BotonWhatsApp>
-      <p className="text-center text-xs text-tenue">
-        Se abrirá WhatsApp con tu pedido listo. El precio final y la
-        disponibilidad se confirman por el chat.
-      </p>
+      <aside className="rounded-2xl bg-superficie p-5 lg:sticky lg:top-28">
+        {todosConPrecio && (
+          <p className="flex items-baseline justify-between gap-4">
+            <span className="text-sm text-tenue">Total estimado</span>
+            <span className="text-xl font-bold tabular-nums">
+              {formatearSoles(total)}
+            </span>
+          </p>
+        )}
+        {!todosConPrecio && (
+          <p className="text-sm leading-relaxed text-tenue">
+            El precio de algunos modelos se confirma por WhatsApp.
+          </p>
+        )}
+        <BotonWhatsApp
+          href={linkCarrito(items)}
+          origen="carrito"
+          detalle={{ items: items.length }}
+          className="mt-5 w-full text-base"
+        >
+          Finalizar compra por WhatsApp
+        </BotonWhatsApp>
+        <p className="mt-3 text-center text-xs leading-relaxed text-tenue">
+          Se abrirá WhatsApp con tu pedido listo. El precio final y la
+          disponibilidad se confirman por el chat.
+        </p>
+      </aside>
     </div>
   );
 }

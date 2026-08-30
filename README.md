@@ -64,6 +64,7 @@ La dueña completa **precio, colores y tallas** en la Sheet.
 
 1. Importar el repo en Vercel (framework detectado: Next.js).
 2. Variables de entorno: `NEXT_PUBLIC_WHATSAPP`, `GOOGLE_SHEET_CSV_URL`,
-   `NEXT_PUBLIC_SITIO_URL`, `NEXT_PUBLIC_GA_ID` y las de contacto (ver `.env.example`).
+   `NEXT_PUBLIC_SITIO_URL`, `NEXT_PUBLIC_GA_ID` y las de contacto, teléfono y
+   redes sociales (ver `.env.example`).
 3. Conectar el dominio `horsepower.pe` (DNS a Vercel).
 4. Crear un **Deploy Hook** y compartir la URL con quien edite la Sheet.

@@ -15,8 +15,8 @@ const SITIO =
 export const metadata: Metadata = {
   metadataBase: new URL(SITIO),
   title: {
-    default: "HorsePower — Casacas, chompas y mochilas",
-    template: "%s · HorsePower",
+    default: "HorsePower - Casacas, chompas y mochilas",
+    template: "%s | HorsePower",
   },
   description:
     "Catálogo HorsePower: casacas, chompas, mochilas, maletas y más. Elige tus productos y coordina tu compra por WhatsApp.",
@@ -36,9 +36,17 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${geist.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-fondo text-texto">
+        <a
+          href="#contenido"
+          className="boton-oscuro sr-only z-50 px-4 py-2 focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+        >
+          Saltar al contenido
+        </a>
         <CarritoProvider>
           <Encabezado />
-          <main className="flex-1">{children}</main>
+          <main id="contenido" className="flex-1">
+            {children}
+          </main>
           <PieDePagina />
           <BannerCookies />
         </CarritoProvider>

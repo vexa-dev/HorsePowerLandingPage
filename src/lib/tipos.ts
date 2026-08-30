@@ -13,6 +13,11 @@ export function nombreCategoria(slug: string): string {
   return CATEGORIAS.find((c) => c.slug === slug)?.nombre ?? "Catálogo";
 }
 
+/** Normaliza solo la presentación pública, sin cambiar el dato fuente. */
+export function textoVisible(texto: string): string {
+  return texto.replace(/[—–]/g, "-").replace(/\s{2,}/g, " ").trim();
+}
+
 const listaSeparada = z
   .string()
   .optional()

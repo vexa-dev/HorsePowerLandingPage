@@ -7,6 +7,7 @@ export const NUMERO_WHATSAPP =
 export interface ItemCarrito {
   slug: string;
   nombre: string;
+  foto?: string;
   precio?: number;
   color?: string;
   talla?: string;

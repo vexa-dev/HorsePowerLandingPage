@@ -58,21 +58,28 @@ export function BannerCookies() {
       )}
 
       {estado === "desconocido" && (
-        <div className="fixed inset-x-0 bottom-0 z-50 border-t bg-fondo p-4 text-sm shadow-lg">
-          <div className="mx-auto flex max-w-4xl flex-col items-center gap-3 sm:flex-row">
-            <p className="text-tenue">
+        <div
+          role="dialog"
+          aria-label="Preferencias de cookies"
+          aria-describedby="cookies-descripcion"
+          className="fixed inset-x-0 bottom-0 z-50 border-t bg-fondo p-4 text-sm shadow-[0_-16px_40px_-32px_rgb(21_22_25/0.8)]"
+        >
+          <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:px-2 lg:flex-row lg:items-center lg:px-6">
+            <p id="cookies-descripcion" className="max-w-2xl leading-relaxed text-tenue">
               Usamos cookies para medir el uso del sitio y mejorar el catálogo.
             </p>
-            <div className="flex gap-2 sm:ml-auto">
+            <div className="flex gap-2 lg:ml-auto">
               <button
+                type="button"
                 onClick={() => decidir("rechazado")}
-                className="rounded border px-3 py-1.5 hover:border-texto"
+                className="min-h-11 rounded-lg border px-4 py-2 font-semibold hover:border-texto hover:bg-superficie"
               >
                 Rechazar
               </button>
               <button
+                type="button"
                 onClick={() => decidir("aceptado")}
-                className="rounded bg-texto px-3 py-1.5 font-medium text-fondo"
+                className="boton-oscuro min-h-11 px-4 py-2"
               >
                 Aceptar
               </button>

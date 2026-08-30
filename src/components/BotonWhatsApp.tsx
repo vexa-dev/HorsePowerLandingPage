@@ -22,7 +22,7 @@ export function BotonWhatsApp({
       rel="noreferrer"
       onClick={() => eventoWhatsApp(origen, detalle)}
       className={
-        "inline-flex items-center justify-center gap-2 rounded-md bg-acento px-4 py-2.5 font-semibold text-white transition hover:bg-acento-hover " +
+        "boton-acento inline-flex min-h-12 items-center justify-center gap-2 px-5 py-3 shadow-[0_12px_24px_-18px_var(--acento)] hover:-translate-y-0.5 " +
         className
       }
     >
