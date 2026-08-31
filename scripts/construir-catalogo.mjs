@@ -284,19 +284,34 @@ function pegarFotos(excel, fotos) {
   }));
   const descartadas = [];
 
+  // ¿el nombre de foto `c` corresponde al modelo del Excel `b`?
+  function calza(bc, c) {
+    if (bc === c) return true;
+    if (bc.length >= 5 && c.length >= 5 && (bc.includes(c) || c.includes(bc)))
+      return true;
+    if (Math.min(bc.length, c.length) >= 4 && editDist(bc, c, 1) <= 1)
+      return true;
+    // typos mayores solo si empiezan y terminan igual (ESPEDT ~ EXPEDIT)
+    if (
+      Math.max(bc.length, c.length) >= 6 &&
+      bc[0] === c[0] &&
+      bc[bc.length - 1] === c[c.length - 1] &&
+      editDist(bc, c, 2) <= 2
+    )
+      return true;
+    return false;
+  }
+
   for (const g of fotos.values()) {
     const c = compacto(g.modeloNorm);
     if (c.length < 3) {
       descartadas.push(g);
       continue;
     }
-    let acc =
-      bases.find((b) => b.c === c)?.acc ||
-      bases.find(
-        (b) =>
-          (b.c.length >= 4 && c.length >= 4 && (b.c.includes(c) || c.includes(b.c))),
-      )?.acc ||
-      bases.find((b) => editDist(b.c, c, 2) <= 2)?.acc;
+    // el prefijo del archivo manda la categoría: una foto de CAMISA nunca
+    // se pega a una cartuchera. Solo se buscan modelos de la misma categoría.
+    const candidatos = bases.filter((b) => b.acc.categoria === g.categoria);
+    const acc = candidatos.find((b) => calza(b.c, c))?.acc;
 
     if (!acc) {
       descartadas.push(g);
