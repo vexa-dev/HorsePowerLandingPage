@@ -51,3 +51,4 @@ next-env.d.ts
 /scripts/catalogo-borrador.csv
 /scripts/colores-desde-fotos.csv
 /scripts/colores-desde-excel.csv
+/scripts/fotos-descartadas.csv
