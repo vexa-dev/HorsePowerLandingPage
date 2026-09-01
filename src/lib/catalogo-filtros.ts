@@ -58,6 +58,80 @@ export function normalizarTexto(valor: string): string {
     .trim();
 }
 
+export const COLOR_SWATCHES: Record<string, string> = {
+  acero: "bg-slate-400",
+  amarillo: "bg-yellow-400",
+  arena: "bg-amber-100",
+  azul: "bg-blue-600",
+  "azul marino": "bg-blue-900",
+  beige: "bg-stone-300",
+  blanco: "bg-white border border-linea",
+  camel: "bg-amber-700",
+  camello: "bg-amber-700",
+  celeste: "bg-sky-300",
+  fucsia: "bg-fuchsia-500",
+  gris: "bg-gray-500",
+  jade: "bg-emerald-500",
+  kaki: "bg-yellow-800",
+  marron: "bg-amber-900",
+  morado: "bg-violet-600",
+  naranja: "bg-orange-500",
+  negro: "bg-zinc-950",
+  perla: "bg-slate-100",
+  petroleo: "bg-cyan-900",
+  plomo: "bg-zinc-500",
+  rojo: "bg-red-600",
+  rosado: "bg-pink-300",
+  terracota: "bg-orange-700",
+  turquesa: "bg-teal-400",
+  verde: "bg-green-600",
+  "verde militar": "bg-emerald-800",
+  vino: "bg-red-950",
+};
+
+export function claseMuestraColor(valor: string): string {
+  return COLOR_SWATCHES[normalizarTexto(valor)] ?? "bg-superficie-fuerte border border-linea";
+}
+
+export type TipoOrden =
+  | "destacado"
+  | "precio-asc"
+  | "precio-desc"
+  | "nombre-asc"
+  | "nombre-desc";
+
+export function ordenarProductos(
+  productos: Producto[],
+  orden: TipoOrden,
+): Producto[] {
+  const copia = [...productos];
+  switch (orden) {
+    case "precio-asc":
+      return copia.sort((a, b) => {
+        const pa = a.precioOferta ?? a.precio ?? Number.MAX_SAFE_INTEGER;
+        const pb = b.precioOferta ?? b.precio ?? Number.MAX_SAFE_INTEGER;
+        return pa - pb;
+      });
+    case "precio-desc":
+      return copia.sort((a, b) => {
+        const pa = a.precioOferta ?? a.precio ?? -1;
+        const pb = b.precioOferta ?? b.precio ?? -1;
+        return pb - pa;
+      });
+    case "nombre-asc":
+      return copia.sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
+    case "nombre-desc":
+      return copia.sort((a, b) => b.nombre.localeCompare(a.nombre, "es"));
+    case "destacado":
+    default:
+      return copia.sort((a, b) => {
+        if (a.destacadoHP && !b.destacadoHP) return -1;
+        if (!a.destacadoHP && b.destacadoHP) return 1;
+        return a.nombre.localeCompare(b.nombre, "es");
+      });
+  }
+}
+
 function valoresUnicos(valores: string[]): string[] {
   const vistos = new Set<string>();
   const resultado: string[] = [];
