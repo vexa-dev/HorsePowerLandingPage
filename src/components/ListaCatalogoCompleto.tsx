@@ -26,7 +26,7 @@ import {
   IconSearch,
   IconX,
   IconArrowsSort,
-  IconLayoutList,
+  IconTable,
   IconLayoutGrid,
   IconPhotoOff,
   IconArrowUpRight,
@@ -37,7 +37,7 @@ export function ListaCatalogoCompleto({
 }: {
   productos: Producto[];
 }) {
-  const [vista, setVista] = useState<"lista" | "grilla">("lista");
+  const [vista, setVista] = useState<"tabla" | "grilla">("tabla");
   const [orden, setOrden] = useState<TipoOrden>("destacado");
   const { filtros, actualizarFiltros, limpiarFiltros } = useFiltrosCatalogo();
 
@@ -111,7 +111,7 @@ export function ListaCatalogoCompleto({
                 onChange={(event) =>
                   actualizarFiltros({ ...filtros, q: event.target.value })
                 }
-                placeholder="Buscar por nombre, tipo, color o talla..."
+                placeholder="Buscar por modelo, categoría, color o talla..."
                 className="min-h-12 w-full rounded-xl border bg-tarjeta pl-10 pr-10 text-sm outline-none transition focus:border-texto focus:ring-2 focus:ring-acento/20"
               />
               {filtros.q && (
@@ -148,27 +148,27 @@ export function ListaCatalogoCompleto({
               </select>
             </div>
 
-            {/* Alternar vista Lista / Grilla */}
+            {/* Alternar vista Tabla / Grilla */}
             <div className="flex items-center rounded-xl border bg-tarjeta p-1">
               <button
                 type="button"
-                onClick={() => setVista("lista")}
+                onClick={() => setVista("tabla")}
                 className={`p-1.5 rounded-lg transition ${
-                  vista === "lista"
-                    ? "bg-texto text-fondo"
+                  vista === "tabla"
+                    ? "bg-texto text-fondo shadow-sm"
                     : "text-tenue hover:text-texto"
                 }`}
-                aria-label="Vista en lista"
-                title="Vista en lista"
+                aria-label="Vista en tabla"
+                title="Vista en tabla"
               >
-                <IconLayoutList size={18} />
+                <IconTable size={18} />
               </button>
               <button
                 type="button"
                 onClick={() => setVista("grilla")}
                 className={`p-1.5 rounded-lg transition ${
                   vista === "grilla"
-                    ? "bg-texto text-fondo"
+                    ? "bg-texto text-fondo shadow-sm"
                     : "text-tenue hover:text-texto"
                 }`}
                 aria-label="Vista en cuadrícula"
@@ -185,9 +185,12 @@ export function ListaCatalogoCompleto({
           <p className="text-xs font-medium text-tenue" aria-live="polite">
             Mostrando <span className="font-bold text-texto">{resultado.length}</span> modelos
           </p>
+          <span className="text-[11px] text-tenue hidden sm:inline">
+            Desplaza horizontalmente para ver todos los datos
+          </span>
         </div>
 
-        {/* Estado vacío o Lista de productos */}
+        {/* Estado vacío o Contenido */}
         {resultado.length === 0 ? (
           <div className="mt-6">
             <EstadoVacio
@@ -216,123 +219,159 @@ export function ListaCatalogoCompleto({
             ))}
           </div>
         ) : (
-          /* Vista Lista / Tabla Responsive */
-          <div className="mt-6 space-y-3">
-            {resultado.map((producto) => {
-              const precio = precioMostrado(producto);
-              const enOferta = producto.precioOferta != null;
+          /* Vista Tabla con Scroll Horizontal Contenido */
+          <div className="mt-6 overflow-hidden rounded-2xl border bg-tarjeta shadow-sm">
+            <div className="overflow-x-auto scrollbar-thin">
+              <table className="min-w-[48rem] w-full text-left text-sm border-collapse">
+                <caption className="sr-only">
+                  Catálogo completo de modelos HorsePower
+                </caption>
+                <thead className="border-b bg-superficie/80 text-[11px] font-bold uppercase tracking-wider text-tenue">
+                  <tr>
+                    <th scope="col" className="px-4 py-3.5 w-16">Foto</th>
+                    <th scope="col" className="px-4 py-3.5">Modelo</th>
+                    <th scope="col" className="px-4 py-3.5">Categoría</th>
+                    <th scope="col" className="px-4 py-3.5">Variantes</th>
+                    <th scope="col" className="px-4 py-3.5 text-right">Precio</th>
+                    <th scope="col" className="px-4 py-3.5 text-center w-36">Acción</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-linea/60">
+                  {resultado.map((producto) => {
+                    const precio = precioMostrado(producto);
+                    const enOferta = producto.precioOferta != null;
 
-              return (
-                <div
-                  key={producto.slug}
-                  className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border bg-tarjeta p-3.5 sm:p-4 transition-all hover:border-texto hover:shadow-[0_12px_24px_-15px_rgba(21,22,25,0.1)]"
-                >
-                  <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                    {/* Miniatura */}
-                    <div className="product-stage relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-xl border border-linea/60">
-                      {producto.foto ? (
-                        <Image
-                          src={`/${producto.foto}`}
-                          alt={producto.nombre}
-                          fill
-                          sizes="80px"
-                          className="object-contain p-1.5 transition-transform duration-300 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="flex size-full items-center justify-center text-tenue bg-superficie">
-                          <IconPhotoOff size={20} stroke={1.5} />
-                        </div>
-                      )}
-                    </div>
+                    return (
+                      <tr
+                        key={producto.slug}
+                        className="transition-colors hover:bg-superficie/60"
+                      >
+                        {/* Foto / Placeholder */}
+                        <td className="px-4 py-3">
+                          <div className="product-stage relative size-12 overflow-hidden rounded-lg border border-linea/60 shrink-0">
+                            {producto.foto ? (
+                              <Image
+                                src={`/${producto.foto}`}
+                                alt={producto.nombre}
+                                fill
+                                sizes="48px"
+                                className="object-contain p-1"
+                              />
+                            ) : (
+                              <div className="flex size-full items-center justify-center text-tenue bg-superficie">
+                                <IconPhotoOff size={16} stroke={1.5} />
+                              </div>
+                            )}
+                          </div>
+                        </td>
 
-                    {/* Información */}
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        {producto.foto ? (
-                          <Link
-                            href={`/producto/${producto.slug}`}
-                            className="font-bold text-texto hover:text-acento transition-colors text-sm sm:text-base line-clamp-1"
-                          >
-                            {textoVisible(producto.nombre)}
-                          </Link>
-                        ) : (
-                          <span className="font-bold text-texto text-sm sm:text-base line-clamp-1">
-                            {textoVisible(producto.nombre)}
-                          </span>
-                        )}
-                        {enOferta && (
-                          <span className="rounded bg-acento px-1.5 py-0.5 text-[10px] font-black uppercase text-texto-inverso">
-                            Oferta
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-tenue">
-                        <span className="font-medium text-texto">
-                          {nombreCategoria(producto.categoria)}
-                        </span>
-                        {producto.subcategoria && (
-                          <span>· {textoVisible(producto.subcategoria)}</span>
-                        )}
-                        {producto.genero && (
-                          <span>· {producto.genero}</span>
-                        )}
-                      </div>
-
-                      {producto.colores.length > 0 && (
-                        <p className="mt-1 text-[11px] text-tenue line-clamp-1">
-                          <span className="font-semibold">Colores:</span>{" "}
-                          {producto.colores.join(", ")}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Precio y Acción */}
-                  <div className="flex items-center justify-between sm:justify-end gap-4 pt-2 sm:pt-0 border-t sm:border-t-0 border-linea/40">
-                    <div className="text-left sm:text-right min-w-[6rem]">
-                      {precio != null ? (
-                        <div>
-                          <p className="font-black text-texto text-sm sm:text-base tabular-nums">
-                            {formatearSoles(precio)}
-                          </p>
-                          {enOferta && producto.precio != null && (
-                            <p className="text-[11px] text-tenue line-through tabular-nums">
-                              {formatearSoles(producto.precio)}
+                        {/* Modelo */}
+                        <td className="px-4 py-3 font-semibold">
+                          <div className="flex items-center gap-2">
+                            {producto.foto ? (
+                              <Link
+                                href={`/producto/${producto.slug}`}
+                                className="font-bold text-texto hover:text-acento transition-colors line-clamp-1"
+                              >
+                                {textoVisible(producto.nombre)}
+                              </Link>
+                            ) : (
+                              <span className="font-bold text-texto line-clamp-1">
+                                {textoVisible(producto.nombre)}
+                              </span>
+                            )}
+                            {enOferta && (
+                              <span className="rounded bg-acento px-1.5 py-0.5 text-[9px] font-black uppercase text-texto-inverso">
+                                Oferta
+                              </span>
+                            )}
+                          </div>
+                          {producto.genero && (
+                            <p className="text-[11px] font-normal text-tenue">
+                              {producto.genero}
                             </p>
                           )}
-                        </div>
-                      ) : (
-                        <span className="text-xs font-semibold text-tenue">
-                          Por consultar
-                        </span>
-                      )}
-                    </div>
+                        </td>
 
-                    <div className="shrink-0">
-                      {producto.foto ? (
-                        <Link
-                          href={`/producto/${producto.slug}`}
-                          className="boton-oscuro inline-flex min-h-10 items-center gap-1 px-4 py-2 text-xs font-bold"
-                        >
-                          Ver ficha
-                          <IconArrowUpRight size={15} />
-                        </Link>
-                      ) : (
-                        <BotonWhatsApp
-                          href={linkConsultaProducto(producto)}
-                          origen="catalogo-completo"
-                          detalle={{ producto: producto.slug }}
-                          tamano="sm"
-                        >
-                          Consultar
-                        </BotonWhatsApp>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                        {/* Categoría */}
+                        <td className="px-4 py-3 text-xs text-tenue">
+                          <span className="font-semibold text-texto">
+                            {nombreCategoria(producto.categoria)}
+                          </span>
+                          {producto.subcategoria && (
+                            <p className="text-[11px] text-tenue">
+                              {textoVisible(producto.subcategoria)}
+                            </p>
+                          )}
+                        </td>
+
+                        {/* Variantes (Colores y tallas) */}
+                        <td className="px-4 py-3 text-xs text-tenue">
+                          {producto.colores.length > 0 && (
+                            <p className="line-clamp-1">
+                              <span className="font-medium text-texto">Colores:</span>{" "}
+                              {producto.colores.join(", ")}
+                            </p>
+                          )}
+                          {producto.tallas.length > 0 && (
+                            <p className="line-clamp-1 text-[11px]">
+                              <span className="font-medium text-texto">Tallas:</span>{" "}
+                              {producto.tallas.join(", ")}
+                            </p>
+                          )}
+                          {producto.colores.length === 0 && producto.tallas.length === 0 && (
+                            <span className="text-[11px] italic">A consultar</span>
+                          )}
+                        </td>
+
+                        {/* Precio */}
+                        <td className="px-4 py-3 text-right tabular-nums">
+                          {precio != null ? (
+                            <div>
+                              <p className="font-black text-texto text-sm">
+                                {formatearSoles(precio)}
+                              </p>
+                              {enOferta && producto.precio != null && (
+                                <p className="text-[10px] text-tenue line-through">
+                                  {formatearSoles(producto.precio)}
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-xs font-medium text-tenue italic">
+                              Consultar
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Acción */}
+                        <td className="px-4 py-3 text-center">
+                          {producto.foto ? (
+                            <Link
+                              href={`/producto/${producto.slug}`}
+                              className="boton-oscuro inline-flex min-h-9 items-center justify-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold w-full"
+                            >
+                              Ver ficha
+                              <IconArrowUpRight size={14} />
+                            </Link>
+                          ) : (
+                            <BotonWhatsApp
+                              href={linkConsultaProducto(producto)}
+                              origen="catalogo-completo"
+                              detalle={{ producto: producto.slug }}
+                              tamano="sm"
+                              ancho="completo"
+                            >
+                              Consultar
+                            </BotonWhatsApp>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </section>
