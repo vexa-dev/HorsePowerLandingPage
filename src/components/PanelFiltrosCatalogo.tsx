@@ -10,6 +10,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import {
   CAMPOS_FILTRO,
   cantidadFiltrosActivos,
+  claseMuestraColor,
   filtrosActivos,
   normalizarTexto,
   obtenerOpcionesFiltro,
@@ -27,29 +28,6 @@ const ETIQUETAS: Record<CampoFiltro, string> = {
   talla: "Talla",
 };
 
-const COLOR_SWATCHES: Record<string, string> = {
-  acero: "bg-slate-400",
-  amarillo: "bg-yellow-400",
-  arena: "bg-amber-100",
-  azul: "bg-blue-600",
-  beige: "bg-stone-300",
-  camello: "bg-amber-700",
-  celeste: "bg-sky-300",
-  fucsia: "bg-fuchsia-500",
-  gris: "bg-gray-500",
-  jade: "bg-emerald-500",
-  marron: "bg-amber-900",
-  morado: "bg-violet-600",
-  negro: "bg-black",
-  perla: "bg-slate-100",
-  plomo: "bg-zinc-500",
-  rojo: "bg-red-600",
-  rosado: "bg-pink-300",
-  terracota: "bg-orange-700",
-  verde: "bg-green-600",
-  vino: "bg-red-900",
-};
-
 interface PanelFiltrosCatalogoProps {
   productos: Producto[];
   productosParaOpciones?: Producto[];
@@ -64,10 +42,6 @@ interface ContenidoFiltrosProps
   extends PanelFiltrosCatalogoProps {
   idPrefix: string;
   onClose?: () => void;
-}
-
-function claseMuestraColor(valor: string): string {
-  return COLOR_SWATCHES[normalizarTexto(valor)] ?? "bg-superficie-fuerte";
 }
 
 function ContenidoFiltros({
