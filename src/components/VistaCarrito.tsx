@@ -229,7 +229,7 @@ export function VistaCarrito() {
       </div>
 
       {/* Sidebar: Resumen del Pedido */}
-      <aside className="rounded-3xl border bg-tarjeta p-6 sm:p-7 shadow-[0_20px_50px_-25px_rgba(21,22,25,0.1)] lg:sticky lg:top-28">
+      <aside className="rounded-3xl border bg-tarjeta p-6 sm:p-7 shadow-[0_20px_50px_-25px_rgb(var(--sombra-rgb)/0.1)] lg:sticky lg:top-28">
         <h2 className="text-lg font-black tracking-tight text-texto">
           Resumen del pedido
         </h2>

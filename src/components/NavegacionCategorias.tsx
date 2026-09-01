@@ -19,48 +19,44 @@ const ICONOS: Record<CategoriaSlug, IconoCategoria> = {
   "loncheras-y-accesorios": IconToolsKitchen2,
 };
 
-export interface CategoriaConTotal {
+export interface CategoriaHome {
   slug: string;
   nombre: string;
-  total: number;
 }
 
 export function NavegacionCategorias({
   categorias,
 }: {
-  categorias: CategoriaConTotal[];
+  categorias: CategoriaHome[];
 }) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      {categorias.map((categoria, index) => {
-        const Icono = ICONOS[categoria.slug as CategoriaSlug] ?? IconShirt;
+    <div className="overflow-x-auto rounded-2xl border border-linea bg-tarjeta md:overflow-visible">
+      <div className="grid min-w-max grid-flow-col auto-cols-[minmax(13.5rem,1fr)] md:min-w-0 md:grid-cols-4 md:grid-flow-row">
+        {categorias.map((categoria) => {
+          const Icono = ICONOS[categoria.slug as CategoriaSlug] ?? IconShirt;
 
-        return (
-          <Link
-            key={categoria.slug}
-            href={`/categoria/${categoria.slug}`}
-            className={`group flex min-h-28 items-center gap-4 rounded-2xl border bg-tarjeta p-4 shadow-[0_12px_30px_-26px_rgb(var(--sombra-rgb)/0.7)] hover:-translate-y-0.5 hover:border-acento hover:bg-superficie ${index === 0 ? "sm:col-span-2 lg:col-span-2 lg:row-span-2 lg:min-h-[14.5rem] lg:flex-col lg:items-start lg:justify-between" : ""}`}
-          >
-            <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-superficie text-acento transition group-hover:bg-acento group-hover:text-texto-inverso">
-              <Icono aria-hidden="true" size={24} stroke={1.7} />
-            </span>
-            <span className="min-w-0 flex-1 lg:flex-none">
-              <span className="block text-sm font-bold leading-tight">
+          return (
+            <Link
+              key={categoria.slug}
+              href={`/categoria/${categoria.slug}`}
+              className="group relative flex min-h-28 items-center gap-3 border-r border-linea px-5 py-4 last:border-r-0 hover:bg-superficie"
+            >
+              <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-superficie text-acento transition-colors group-hover:bg-acento group-hover:text-texto-inverso">
+                <Icono aria-hidden="true" size={22} stroke={1.7} />
+              </span>
+              <span className="min-w-0 flex-1 text-sm font-bold leading-tight">
                 {categoria.nombre}
               </span>
-              <span className="mt-1 block text-xs text-tenue">
-                {categoria.total} {categoria.total === 1 ? "modelo" : "modelos"}
-              </span>
-            </span>
-            <IconArrowUpRight
-              aria-hidden="true"
-              size={18}
-              stroke={1.8}
-              className="shrink-0 text-tenue transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-acento"
-            />
-          </Link>
-        );
-      })}
+              <IconArrowUpRight
+                aria-hidden="true"
+                size={18}
+                stroke={1.8}
+                className="shrink-0 text-tenue transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-acento"
+              />
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }

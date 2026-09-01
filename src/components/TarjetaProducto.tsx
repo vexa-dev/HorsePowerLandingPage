@@ -33,7 +33,7 @@ export function TarjetaProducto({
     <Link
       href={`/producto/${producto.slug}`}
       style={style}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-tarjeta transition-all duration-300 hover:-translate-y-1 hover:border-texto hover:shadow-[0_20px_40px_-20px_rgba(21,22,25,0.18)] ${className}`}
+      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-tarjeta transition-all duration-300 hover:-translate-y-1 hover:border-texto hover:shadow-[0_20px_40px_-20px_rgb(var(--sombra-rgb)/0.18)] ${className}`}
     >
       {/* Contenedor de la foto */}
       <div className="product-stage relative aspect-square w-full overflow-hidden">
