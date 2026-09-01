@@ -14,14 +14,14 @@ export function GaleriaProducto({
   const total = fotos.length;
 
   if (total === 0) {
-    return <div className="aspect-square rounded-lg border bg-linea/40" />;
+    return <div className="aspect-square rounded-md border bg-superficie" />;
   }
 
   const ir = (n: number) => setI((n + total) % total);
 
   return (
     <div>
-      <div className="relative aspect-square overflow-hidden rounded-lg border bg-linea/40">
+      <div className="relative aspect-square overflow-hidden rounded-md border bg-superficie">
         <Image
           key={fotos[i]}
           src={`/${fotos[i]}`}
@@ -29,7 +29,7 @@ export function GaleriaProducto({
           fill
           priority
           sizes="(max-width: 768px) 100vw, 500px"
-          className="object-cover"
+          className="object-contain p-3"
         />
 
         {total > 1 && (
@@ -67,13 +67,13 @@ export function GaleriaProducto({
                 (n === i ? "border-texto" : "border-linea opacity-70")
               }
             >
-              <Image
-                src={`/${f}`}
-                alt=""
-                fill
-                sizes="64px"
-                className="object-cover"
-              />
+                <Image
+                  src={`/${f}`}
+                  alt=""
+                  fill
+                  sizes="64px"
+                  className="object-contain p-1"
+                />
             </button>
           ))}
         </div>

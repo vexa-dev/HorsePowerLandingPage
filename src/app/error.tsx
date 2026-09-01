@@ -19,7 +19,7 @@ export default function Error({
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-acento">
         HorsePower
       </p>
-      <h1 className="mt-5 text-4xl font-black tracking-[-0.05em] sm:text-6xl">
+      <h1 className="texto-display mt-5 text-4xl sm:text-6xl">
         No pudimos cargar el catálogo.
       </h1>
       <p className="mt-4 max-w-lg leading-relaxed text-tenue">
@@ -36,7 +36,7 @@ export default function Error({
         </button>
         <Link
           href="/"
-          className="inline-flex min-h-12 items-center rounded-xl border px-5 py-3 font-semibold hover:border-texto hover:bg-superficie"
+          className="boton-secundario inline-flex min-h-12 items-center px-5 py-3"
         >
           Ir al inicio
         </Link>

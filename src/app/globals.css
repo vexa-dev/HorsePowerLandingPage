@@ -1,5 +1,36 @@
 @import "tailwindcss";
 
+/*
+ * ─── Tokens de diseño HorsePower ───────────────────────────────────────────
+ *
+ * Paleta (claro en :root, oscuro vía prefers-color-scheme):
+ *   --fondo             fondo de la página
+ *   --texto             texto principal
+ *   --tenue             texto secundario
+ *   --linea             bordes y divisores
+ *   --tarjeta           fondo de tarjetas
+ *   --superficie        superficies suaves (fotos, hovers, footer)
+ *   --superficie-fuerte superficies marcadas (hover de superficie)
+ *   --acento            rojo de marca (botones, etiquetas, foco)
+ *   --acento-hover      acento al pasar el cursor
+ *   --texto-inverso     texto sobre acento/oscuro
+ *
+ * Tipografía:
+ *   --font-display      Archivo Black — títulos, hero, números grandes
+ *   --font-sans         Geist — cuerpo e interfaz
+ *   Escala: text-xs .. text-4xl de Tailwind + clase .texto-display
+ *
+ * Forma, profundidad y ritmo:
+ *   --radio-sm/md/lg    radios de botones, tarjetas y paneles
+ *   --sombra-sm/md/lg   sombras (tarjeta, dropdown, hero)
+ *   --ritmo             base del espaciado vertical entre secciones
+ *
+ * Se consumen vía utilidades de Tailwind: bg-fondo, text-tenue, border-linea,
+ * rounded-tarjeta, shadow-tarjeta, font-display, etc.
+ * Los tres botones base: .boton-oscuro / .boton-acento / .boton-secundario.
+ * ──────────────────────────────────────────────────────────────────────────
+ */
+
 :root {
   color-scheme: light;
   --fondo: #ffffff;
@@ -12,6 +43,35 @@
   --acento: #c92337;
   --acento-hover: #a91e2e;
   --texto-inverso: #ffffff;
+
+  --radio-sm: 0.375rem;
+  --radio-md: 0.75rem;
+  --radio-lg: 1rem;
+  --sombra-sm: 0 1px 2px rgb(21 22 25 / 0.06);
+  --sombra-md: 0 8px 24px -12px rgb(21 22 25 / 0.25);
+  --sombra-lg: 0 24px 60px -30px rgb(21 22 25 / 0.3);
+  --sombra-rgb: 21 22 25;
+  --ritmo: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --fondo: #131417;
+    --texto: #eceef1;
+    --tenue: #9ba0aa;
+    --linea: #2e3138;
+    --tarjeta: #1b1d22;
+    --superficie: #20232a;
+    --superficie-fuerte: #282c34;
+    --acento: #c92337;
+    --acento-hover: #e02f45;
+    --texto-inverso: #ffffff;
+    --sombra-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --sombra-md: 0 8px 24px -12px rgb(0 0 0 / 0.6);
+    --sombra-lg: 0 24px 60px -30px rgb(0 0 0 / 0.7);
+    --sombra-rgb: 0 0 0;
+  }
 }
 
 @theme inline {
@@ -25,7 +85,23 @@
   --color-acento: var(--acento);
   --color-acento-hover: var(--acento-hover);
   --color-texto-inverso: var(--texto-inverso);
+
+  --radius-sm: var(--radio-sm);
+  --radius-md: var(--radio-md);
+  --radius-lg: var(--radio-lg);
+  --radius-tarjeta: var(--radio-md);
+
+  --shadow-sm: var(--sombra-sm);
+  --shadow-md: var(--sombra-md);
+  --shadow-lg: var(--sombra-lg);
+  --shadow-tarjeta: var(--sombra-sm);
+  --shadow-panel: var(--sombra-lg);
+
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-display: var(--font-display-archivo), var(--font-geist-sans), system-ui,
+    sans-serif;
+
+  --spacing-ritmo: var(--ritmo);
 }
 
 * {
@@ -79,7 +155,7 @@ select:focus-visible {
 .boton-oscuro,
 .boton-acento,
 .boton-secundario {
-  border-radius: 0.75rem;
+  border-radius: var(--radio-md);
   font-weight: 600;
   transition:
     color 180ms ease,
@@ -144,6 +220,11 @@ input::placeholder {
 
 img {
   display: block;
+}
+
+.texto-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
 }
 
 .product-stage {

@@ -12,9 +12,13 @@ import { IconArrowRight } from "@tabler/icons-react";
 export function TarjetaProducto({
   producto,
   prioridad = false,
+  className = "",
+  style,
 }: {
   producto: Producto;
   prioridad?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 }) {
   const precio = precioMostrado(producto);
   const enOferta = producto.precioOferta != null;
@@ -24,7 +28,8 @@ export function TarjetaProducto({
   return (
     <Link
       href={`/producto/${producto.slug}`}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border bg-tarjeta transition-all duration-300 hover:-translate-y-1 hover:border-texto hover:shadow-[0_20px_40px_-20px_rgba(21,22,25,0.18)]"
+      style={style}
+      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-tarjeta transition-all duration-300 hover:-translate-y-1 hover:border-texto hover:shadow-[0_20px_40px_-20px_rgba(21,22,25,0.18)] ${className}`}
     >
       {/* Contenedor de la foto */}
       <div className="product-stage relative aspect-square w-full overflow-hidden">

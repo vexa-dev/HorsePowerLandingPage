@@ -62,7 +62,7 @@ export function BannerCookies() {
           role="dialog"
           aria-label="Preferencias de cookies"
           aria-describedby="cookies-descripcion"
-          className="fixed inset-x-0 bottom-0 z-50 border-t bg-fondo p-4 text-sm shadow-[0_-16px_40px_-32px_rgb(21_22_25/0.8)]"
+          className="fixed inset-x-0 bottom-0 z-50 border-t bg-fondo p-4 text-sm shadow-[0_-16px_40px_-32px_rgb(var(--sombra-rgb)/0.8)]"
         >
           <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:px-2 lg:flex-row lg:items-center lg:px-6">
             <p id="cookies-descripcion" className="max-w-2xl leading-relaxed text-tenue">

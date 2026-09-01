@@ -323,7 +323,7 @@ export function PanelFiltrosCatalogo({
             role="dialog"
             aria-modal="true"
             aria-labelledby={`${id}-drawer-title`}
-            className="absolute inset-y-0 right-0 flex w-[min(92vw,25rem)] flex-col overflow-y-auto bg-tarjeta p-5 shadow-[-24px_0_60px_-35px_rgb(21_22_25/0.7)]"
+            className="absolute inset-y-0 right-0 flex w-[min(92vw,25rem)] flex-col overflow-y-auto bg-tarjeta p-5 shadow-[-24px_0_60px_-35px_rgb(var(--sombra-rgb)/0.7)]"
           >
             <div className="mb-5 flex items-center justify-between gap-4">
               <div>

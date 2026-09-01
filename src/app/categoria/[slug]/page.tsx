@@ -61,7 +61,7 @@ export default async function CategoriaPage({
             <IconSparkles size={14} stroke={2} />
             Colección Oficial
           </div>
-          <h1 className="text-3xl font-black tracking-tight sm:text-5xl">
+          <h1 className="texto-display text-3xl font-black tracking-tight sm:text-5xl">
             {categoria}
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-tenue max-w-xl">

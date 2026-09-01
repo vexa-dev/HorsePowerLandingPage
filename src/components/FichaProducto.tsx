@@ -8,10 +8,40 @@ import { precioMostrado, type Producto } from "@/lib/tipos";
 import { BotonWhatsApp } from "./BotonWhatsApp";
 
 export function FichaProducto({ producto }: { producto: Producto }) {
+  // Sin precio (75% del catálogo con foto) no hay nada que "agregar al
+  // carrito": el pedido no puede armarse con un total. Se simplifica a un
+  // solo CTA en vez de mostrar color/talla/cantidad para un flujo que no
+  // puede completarse.
+  if (precioMostrado(producto) == null) {
+    return (
+      <BotonWhatsApp
+        href={linkConsultaProducto(producto)}
+        origen="ficha"
+        detalle={{ producto: producto.slug }}
+        tamano="lg"
+        ancho="completo"
+      >
+        Consultar por WhatsApp
+      </BotonWhatsApp>
+    );
+  }
+
+  return <SelectorYCompra producto={producto} />;
+}
+
+function SelectorYCompra({ producto }: { producto: Producto }) {
   const router = useRouter();
   const { agregar } = useCarrito();
-  const [color, setColor] = useState(producto.colores[0] ?? "");
-  const [talla, setTalla] = useState(producto.tallas[0] ?? "");
+  // Sin preseleccionar cuando hay más de una opción: si "Agregar al carrito"
+  // ya viniera habilitado con un color/talla elegido por defecto, un
+  // cliente podría pedir sin darse cuenta la variante equivocada. Con una
+  // sola opción no hay ambigüedad que forzar a elegir.
+  const [color, setColor] = useState(
+    producto.colores.length === 1 ? producto.colores[0] : "",
+  );
+  const [talla, setTalla] = useState(
+    producto.tallas.length === 1 ? producto.tallas[0] : "",
+  );
   const [cantidad, setCantidad] = useState(1);
   const [agregado, setAgregado] = useState(false);
 
@@ -122,7 +152,7 @@ export function FichaProducto({ producto }: { producto: Producto }) {
           href={linkConsultaProducto(producto)}
           origen="ficha"
           detalle={{ producto: producto.slug }}
-          className="w-full"
+          ancho="completo"
         >
           Consultar por WhatsApp
         </BotonWhatsApp>

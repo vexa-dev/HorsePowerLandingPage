@@ -15,7 +15,7 @@ export function PaginaLegalBorrador({
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-acento">
           Documento en revisión
         </p>
-        <h1 className="mt-5 text-4xl font-black tracking-[-0.05em] text-balance sm:text-5xl">
+        <h1 className="texto-display mt-5 text-4xl text-balance sm:text-5xl">
           {titulo}
         </h1>
         <p className="mt-5 leading-relaxed text-tenue">{descripcion}</p>

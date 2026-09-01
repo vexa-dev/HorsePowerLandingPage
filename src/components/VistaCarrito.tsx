@@ -39,7 +39,7 @@ export function VistaCarrito() {
         <div className="mx-auto flex size-20 items-center justify-center rounded-3xl bg-superficie text-tenue shadow-inner">
           <IconShoppingBag size={36} stroke={1.5} />
         </div>
-        <h2 className="mt-6 text-2xl font-black tracking-tight text-texto sm:text-3xl">
+        <h2 className="texto-display mt-6 text-2xl font-black tracking-tight text-texto sm:text-3xl">
           Tu carrito está vacío
         </h2>
         <p className="mx-auto mt-2.5 max-w-md leading-relaxed text-tenue text-sm sm:text-base">

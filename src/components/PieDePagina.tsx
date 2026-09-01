@@ -104,7 +104,7 @@ export function PieDePagina() {
               height={42}
               className="size-9 object-contain"
             />
-            <p className="text-lg font-black tracking-[0.12em]">
+            <p className="texto-display text-lg tracking-[0.12em]">
               HORSE<span className="text-acento">POWER</span>
             </p>
           </div>
