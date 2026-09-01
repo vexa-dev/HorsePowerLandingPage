@@ -83,7 +83,7 @@ export default async function ProductoPage({
         <GaleriaProducto fotos={p.fotos} alt={p.nombre} />
 
         <div>
-          <h1 className="text-2xl font-black">{p.nombre}</h1>
+          <h1 className="texto-display text-2xl">{p.nombre}</h1>
           {p.genero && <p className="mt-1 text-sm text-tenue">{p.genero}</p>}
 
           <div className="mt-4">

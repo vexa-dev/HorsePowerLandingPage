@@ -6,6 +6,7 @@ import { useCarrito } from "@/lib/carrito";
 import { linkCarrito } from "@/lib/whatsapp";
 import { formatearSoles, textoVisible } from "@/lib/tipos";
 import { BotonWhatsApp } from "./BotonWhatsApp";
+import { EstadoVacio } from "./EstadoVacio";
 
 export function VistaCarrito() {
   const { items, cambiarCantidad, quitar, vaciar, listo } = useCarrito();
@@ -25,18 +26,15 @@ export function VistaCarrito() {
 
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl bg-superficie px-6 py-14 text-center">
-        <p className="text-2xl font-bold tracking-tight">Tu carrito está vacío</p>
-        <p className="mx-auto mt-2 max-w-sm leading-relaxed text-tenue">
-          Revisa el catálogo y agrega los modelos que quieras consultar.
-        </p>
-        <Link
-          href="/"
-          className="boton-oscuro mt-6 inline-flex min-h-12 items-center px-5 py-3"
-        >
-          Ver catálogo
-        </Link>
-      </div>
+      <EstadoVacio
+        titulo="Tu carrito está vacío"
+        descripcion="Revisa el catálogo y agrega los modelos que quieras consultar."
+        accion={
+          <Link href="/" className="boton-oscuro inline-flex min-h-12 items-center px-5 py-3">
+            Ver catálogo
+          </Link>
+        }
+      />
     );
   }
 
@@ -53,7 +51,7 @@ export function VistaCarrito() {
           {items.map((it, i) => (
             <li
               key={`${it.slug}-${it.color ?? ""}-${it.talla ?? ""}-${i}`}
-              className="flex flex-wrap items-center gap-4 rounded-2xl bg-tarjeta p-4 shadow-[0_18px_40px_-32px_rgb(21_22_25/0.55)]"
+              className="flex flex-wrap items-center gap-4 rounded-2xl bg-tarjeta p-4 shadow-[0_18px_40px_-32px_rgb(var(--sombra-rgb)/0.55)]"
             >
               {it.foto ? (
                 <div className="product-stage relative size-20 shrink-0 overflow-hidden rounded-xl">
@@ -141,7 +139,9 @@ export function VistaCarrito() {
           href={linkCarrito(items)}
           origen="carrito"
           detalle={{ items: items.length }}
-          className="mt-5 w-full text-base"
+          tamano="lg"
+          ancho="completo"
+          className="mt-5"
         >
           Finalizar compra por WhatsApp
         </BotonWhatsApp>

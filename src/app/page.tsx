@@ -19,7 +19,7 @@ export default async function Home() {
   return (
     <div className="mx-auto max-w-6xl px-4">
       <section className="py-12 sm:py-16">
-        <h1 className="max-w-2xl text-4xl font-black leading-tight sm:text-5xl">
+        <h1 className="texto-display max-w-2xl text-4xl leading-tight sm:text-5xl">
           Casacas, chompas y mochilas{" "}
           <span className="text-acento">HorsePower</span>
         </h1>
@@ -28,16 +28,10 @@ export default async function Home() {
           y la disponibilidad se confirman por el chat.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/categoria/casacas-y-chompas"
-            className="rounded-md bg-texto px-5 py-2.5 font-semibold text-fondo"
-          >
+          <Link href="/categoria/casacas-y-chompas" className="boton-oscuro px-5 py-2.5">
             Ver casacas
           </Link>
-          <Link
-            href="/catalogo-completo"
-            className="rounded-md border border-texto px-5 py-2.5 font-semibold"
-          >
+          <Link href="/catalogo-completo" className="boton-secundario px-5 py-2.5">
             Catálogo completo
           </Link>
         </div>

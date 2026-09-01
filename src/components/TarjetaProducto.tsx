@@ -21,7 +21,7 @@ export function TarjetaProducto({
       href={`/producto/${producto.slug}`}
       className="group flex flex-col overflow-hidden rounded-lg border bg-tarjeta transition hover:border-texto"
     >
-      <div className="relative aspect-square bg-linea/40">
+      <div className="relative aspect-square bg-superficie">
         {producto.foto ? (
           <Image
             src={`/${producto.foto}`}
@@ -29,7 +29,7 @@ export function TarjetaProducto({
             fill
             priority={prioridad}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
-            className="object-cover transition group-hover:scale-[1.02]"
+            className="object-contain p-2 transition group-hover:scale-[1.02]"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-tenue">
@@ -37,7 +37,7 @@ export function TarjetaProducto({
           </div>
         )}
         {enOferta && (
-          <span className="absolute left-2 top-2 rounded bg-acento px-1.5 py-0.5 text-xs font-bold text-white">
+          <span className="absolute left-2 top-2 rounded-sm bg-acento px-1.5 py-0.5 text-xs font-bold text-texto-inverso">
             OFERTA
           </span>
         )}

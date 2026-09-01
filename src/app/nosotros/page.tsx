@@ -41,7 +41,7 @@ export default function NosotrosPage() {
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-acento">
             La experiencia HorsePower
           </p>
-          <h2 className="mt-5 max-w-xl text-3xl font-black leading-tight tracking-[-0.04em] sm:text-4xl">
+          <h2 className="texto-display mt-5 max-w-xl text-3xl leading-tight sm:text-4xl">
             Un catálogo claro, una conversación directa.
           </h2>
           <p className="mt-5 max-w-xl leading-relaxed text-fondo/75">
@@ -51,7 +51,7 @@ export default function NosotrosPage() {
           </p>
         </div>
         <aside className="rounded-[2rem] border bg-superficie p-7 sm:p-10">
-          <p className="text-5xl font-black tracking-[-0.06em] text-acento">01</p>
+          <p className="texto-display text-5xl text-acento">01</p>
           <h2 className="mt-8 text-2xl font-bold tracking-tight">
             Compra acompañada
           </h2>
