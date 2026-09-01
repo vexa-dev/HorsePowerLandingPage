@@ -169,6 +169,11 @@ export function GrillaConBuscador({ productos }: { productos: Producto[] }) {
                 key={producto.slug}
                 producto={producto}
                 prioridad={index < 4}
+                // A diferencia de la grilla del home (a todo el ancho), acá
+                // desde lg conviven con el panel de filtros lateral
+                // (minmax(16rem,19rem) + gap-8) y son solo 3 columnas, no 4
+                // -- 278px medido en navegador a 1280px de viewport.
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 280px"
               />
             ))}
           </div>

@@ -5,6 +5,7 @@ import { destacadosHP, productosConFoto } from "@/lib/catalogo";
 import { TarjetaProducto } from "@/components/TarjetaProducto";
 import { NavegacionCategorias } from "@/components/NavegacionCategorias";
 import { RevealEnScroll } from "@/components/RevealEnScroll";
+import { EstadoVacio } from "@/components/EstadoVacio";
 
 export const revalidate = 1800;
 
@@ -81,7 +82,7 @@ export default async function Home() {
                   alt={heroProducto.nombre}
                   fill
                   preload
-                  sizes="(max-width: 1024px) 90vw, 480px"
+                  sizes="(max-width: 1024px) 100vw, 480px"
                   className="object-contain p-8 transition group-hover:scale-[1.03]"
                 />
               )}
@@ -112,20 +113,20 @@ export default async function Home() {
         </RevealEnScroll>
       </section>
 
-      {destacados.length > 0 && (
-        <section
-          id="destacados"
-          className="scroll-mt-[160px] py-10 sm:py-14 lg:scroll-mt-[88px]"
-        >
-          <div className="mb-4 flex items-end justify-between">
-            <h2 className="texto-display text-2xl">Destacados</h2>
-            <Link
-              href="/catalogo-completo"
-              className="text-sm font-semibold text-acento hover:underline"
-            >
-              Ver todo
-            </Link>
-          </div>
+      <section
+        id="destacados"
+        className="scroll-mt-[160px] py-10 sm:py-14 lg:scroll-mt-[88px]"
+      >
+        <div className="mb-4 flex items-end justify-between">
+          <h2 className="texto-display text-2xl">Destacados</h2>
+          <Link
+            href="/catalogo-completo"
+            className="text-sm font-semibold text-acento hover:underline"
+          >
+            Ver todo
+          </Link>
+        </div>
+        {destacados.length > 0 ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {destacados.map((p, i) => (
               <RevealEnScroll
@@ -137,8 +138,21 @@ export default async function Home() {
               </RevealEnScroll>
             ))}
           </div>
-        </section>
-      )}
+        ) : (
+          <EstadoVacio
+            titulo="Aún no hay productos con foto en el catálogo."
+            descripcion="Mientras se actualiza, revisa el catálogo completo donde también están los modelos sin foto."
+            accion={
+              <Link
+                href="/catalogo-completo"
+                className="boton-oscuro inline-flex min-h-12 items-center px-5 py-3"
+              >
+                Ver catálogo completo
+              </Link>
+            }
+          />
+        )}
+      </section>
     </div>
   );
 }

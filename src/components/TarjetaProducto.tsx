@@ -14,11 +14,15 @@ export function TarjetaProducto({
   prioridad = false,
   className = "",
   style,
+  sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 320px",
 }: {
   producto: Producto;
   prioridad?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  /** Grillas con menos ancho disponible (ej. sidebar de filtros) deben pasar
+   * un valor propio; el default asume una grilla a todo el ancho. */
+  sizes?: string;
 }) {
   const precio = precioMostrado(producto);
   const enOferta = producto.precioOferta != null;
@@ -38,8 +42,8 @@ export function TarjetaProducto({
             src={`/${producto.foto}`}
             alt={producto.nombre}
             fill
-            priority={prioridad}
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 320px"
+            preload={prioridad}
+            sizes={sizes}
             className="object-contain p-3 transition-transform duration-500 will-change-transform group-hover:scale-105"
           />
         ) : (
