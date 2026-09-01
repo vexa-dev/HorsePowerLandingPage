@@ -6,6 +6,7 @@ import type { Producto } from "@/lib/tipos";
 import { filtrarProductos } from "@/lib/catalogo-filtros";
 import { PanelFiltrosCatalogo } from "./PanelFiltrosCatalogo";
 import { useFiltrosCatalogo } from "./useFiltrosCatalogo";
+import { EstadoVacio } from "./EstadoVacio";
 import { TarjetaProducto } from "./TarjetaProducto";
 
 export function GrillaConBuscador({ productos }: { productos: Producto[] }) {
@@ -86,20 +87,20 @@ export function GrillaConBuscador({ productos }: { productos: Producto[] }) {
         </p>
 
         {resultado.length === 0 ? (
-          <div className="mt-5 rounded-2xl bg-superficie px-6 py-14 text-center">
-            <p className="text-lg font-semibold">
-              No encontramos productos con esos filtros.
-            </p>
-            <p className="mt-2 text-sm text-tenue">
-              Prueba con otro término o elimina alguno de los filtros activos.
-            </p>
-            <button
-              type="button"
-              onClick={limpiarFiltros}
-              className="boton-oscuro mt-5 min-h-11 px-4 py-2.5"
-            >
-              Ver todos los productos
-            </button>
+          <div className="mt-5">
+            <EstadoVacio
+              titulo="No encontramos productos con esos filtros."
+              descripcion="Prueba con otro término o elimina alguno de los filtros activos."
+              accion={
+                <button
+                  type="button"
+                  onClick={limpiarFiltros}
+                  className="boton-oscuro min-h-11 px-4 py-2.5"
+                >
+                  Ver todos los productos
+                </button>
+              }
+            />
           </div>
         ) : (
           <div className="mt-6 grid grid-cols-2 items-start gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5">

@@ -13,6 +13,7 @@ import {
 } from "@/lib/tipos";
 import { PanelFiltrosCatalogo } from "./PanelFiltrosCatalogo";
 import { BotonWhatsApp } from "./BotonWhatsApp";
+import { EstadoVacio } from "./EstadoVacio";
 import { useFiltrosCatalogo } from "./useFiltrosCatalogo";
 
 export function ListaCatalogoCompleto({
@@ -75,20 +76,20 @@ export function ListaCatalogoCompleto({
         </p>
 
         {resultado.length === 0 ? (
-          <div className="mt-5 rounded-2xl bg-superficie px-6 py-14 text-center">
-            <p className="text-lg font-semibold">
-              No encontramos modelos con esos filtros.
-            </p>
-            <p className="mt-2 text-sm text-tenue">
-              Prueba con otra combinación o elimina los filtros activos.
-            </p>
-            <button
-              type="button"
-              onClick={limpiarFiltros}
-              className="boton-oscuro mt-5 min-h-11 px-4 py-2.5"
-            >
-              Ver todo el catálogo
-            </button>
+          <div className="mt-5">
+            <EstadoVacio
+              titulo="No encontramos modelos con esos filtros."
+              descripcion="Prueba con otra combinación o elimina los filtros activos."
+              accion={
+                <button
+                  type="button"
+                  onClick={limpiarFiltros}
+                  className="boton-oscuro min-h-11 px-4 py-2.5"
+                >
+                  Ver todo el catálogo
+                </button>
+              }
+            />
           </div>
         ) : (
           <div className="mt-5 overflow-x-auto rounded-2xl border">

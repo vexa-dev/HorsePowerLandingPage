@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { CATEGORIAS, nombreCategoria } from "@/lib/tipos";
 import { productosPorCategoria } from "@/lib/catalogo";
 import { GrillaConBuscador } from "@/components/GrillaConBuscador";
+import { EstadoVacio } from "@/components/EstadoVacio";
 
 export const revalidate = 1800;
 
@@ -48,17 +49,18 @@ export default async function CategoriaPage({
         </p>
       </header>
       {productos.length === 0 ? (
-        <div className="rounded-2xl bg-superficie px-6 py-14 text-center">
-          <p className="text-lg font-semibold">
-            Aún no hay productos con foto en esta categoría.
-          </p>
-          <Link
-            href="/catalogo-completo"
-            className="boton-oscuro mt-5 inline-flex min-h-12 items-center px-5 py-3"
-          >
-            Ver catálogo completo
-          </Link>
-        </div>
+        <EstadoVacio
+          titulo="Aún no hay productos con foto en esta categoría."
+          descripcion="Mientras tanto, revisa el catálogo completo donde también están los modelos sin foto."
+          accion={
+            <Link
+              href="/catalogo-completo"
+              className="boton-oscuro inline-flex min-h-12 items-center px-5 py-3"
+            >
+              Ver catálogo completo
+            </Link>
+          }
+        />
       ) : (
         <Suspense
           fallback={

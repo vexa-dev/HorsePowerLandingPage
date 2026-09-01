@@ -6,6 +6,7 @@ import { useCarrito } from "@/lib/carrito";
 import { linkCarrito } from "@/lib/whatsapp";
 import { formatearSoles, textoVisible } from "@/lib/tipos";
 import { BotonWhatsApp } from "./BotonWhatsApp";
+import { EstadoVacio } from "./EstadoVacio";
 
 export function VistaCarrito() {
   const { items, cambiarCantidad, quitar, vaciar, listo } = useCarrito();
@@ -25,18 +26,15 @@ export function VistaCarrito() {
 
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl bg-superficie px-6 py-14 text-center">
-        <p className="text-2xl font-bold tracking-tight">Tu carrito está vacío</p>
-        <p className="mx-auto mt-2 max-w-sm leading-relaxed text-tenue">
-          Revisa el catálogo y agrega los modelos que quieras consultar.
-        </p>
-        <Link
-          href="/"
-          className="boton-oscuro mt-6 inline-flex min-h-12 items-center px-5 py-3"
-        >
-          Ver catálogo
-        </Link>
-      </div>
+      <EstadoVacio
+        titulo="Tu carrito está vacío"
+        descripcion="Revisa el catálogo y agrega los modelos que quieras consultar."
+        accion={
+          <Link href="/" className="boton-oscuro inline-flex min-h-12 items-center px-5 py-3">
+            Ver catálogo
+          </Link>
+        }
+      />
     );
   }
 
