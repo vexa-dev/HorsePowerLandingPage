@@ -15,10 +15,14 @@ export default async function Home() {
     productosConFoto(),
   ]);
 
-  const porCategoria = CATEGORIAS.map((c) => ({
+  const categoriasConProductos = CATEGORIAS.map((c) => ({
     ...c,
     total: todos.filter((p) => p.categoria === c.slug).length,
   })).filter((c) => c.total > 0);
+  const porCategoria = categoriasConProductos.map(({ slug, nombre }) => ({
+    slug,
+    nombre,
+  }));
 
   const heroProducto = destacados[0];
   const precioHero = heroProducto ? precioMostrado(heroProducto) : undefined;
