@@ -3,7 +3,6 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { filtrarProductos } from "@/lib/catalogo-filtros";
-import { eventoWhatsApp } from "@/lib/analitica";
 import { linkConsultaProducto } from "@/lib/whatsapp";
 import {
   formatearSoles,
@@ -13,6 +12,7 @@ import {
   type Producto,
 } from "@/lib/tipos";
 import { PanelFiltrosCatalogo } from "./PanelFiltrosCatalogo";
+import { BotonWhatsApp } from "./BotonWhatsApp";
 import { useFiltrosCatalogo } from "./useFiltrosCatalogo";
 
 export function ListaCatalogoCompleto({
@@ -138,19 +138,14 @@ export function ListaCatalogoCompleto({
                             Ver ficha
                           </Link>
                         ) : (
-                          <a
+                          <BotonWhatsApp
                             href={linkConsultaProducto(producto)}
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={() =>
-                              eventoWhatsApp("catalogo-completo", {
-                                producto: producto.slug,
-                              })
-                            }
-                            className="whitespace-nowrap font-semibold text-acento hover:underline"
+                            origen="catalogo-completo"
+                            detalle={{ producto: producto.slug }}
+                            tamano="sm"
                           >
                             Consultar
-                          </a>
+                          </BotonWhatsApp>
                         )}
                       </td>
                     </tr>

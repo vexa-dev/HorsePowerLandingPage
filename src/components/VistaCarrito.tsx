@@ -141,7 +141,9 @@ export function VistaCarrito() {
           href={linkCarrito(items)}
           origen="carrito"
           detalle={{ items: items.length }}
-          className="mt-5 w-full text-base"
+          tamano="lg"
+          ancho="completo"
+          className="mt-5"
         >
           Finalizar compra por WhatsApp
         </BotonWhatsApp>

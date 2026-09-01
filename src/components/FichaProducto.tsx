@@ -122,7 +122,7 @@ export function FichaProducto({ producto }: { producto: Producto }) {
           href={linkConsultaProducto(producto)}
           origen="ficha"
           detalle={{ producto: producto.slug }}
-          className="w-full"
+          ancho="completo"
         >
           Consultar por WhatsApp
         </BotonWhatsApp>
