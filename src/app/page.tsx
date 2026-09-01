@@ -19,7 +19,7 @@ export default async function Home() {
   return (
     <div className="mx-auto max-w-6xl px-4">
       <section className="py-12 sm:py-16">
-        <h1 className="max-w-2xl text-4xl font-black leading-tight sm:text-5xl">
+        <h1 className="texto-display max-w-2xl text-4xl leading-tight sm:text-5xl">
           Casacas, chompas y mochilas{" "}
           <span className="text-acento">HorsePower</span>
         </h1>

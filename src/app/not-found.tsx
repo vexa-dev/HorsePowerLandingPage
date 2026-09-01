@@ -6,7 +6,7 @@ export default function NotFound() {
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-acento">
         HorsePower
       </p>
-      <h1 className="mt-5 text-4xl font-black tracking-[-0.05em] sm:text-6xl">
+      <h1 className="texto-display mt-5 text-4xl sm:text-6xl">
         No encontramos esa página.
       </h1>
       <p className="mt-4 max-w-lg leading-relaxed text-tenue">

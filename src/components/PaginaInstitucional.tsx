@@ -17,7 +17,7 @@ export function PaginaInstitucional({
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-acento">
           {eyebrow}
         </p>
-        <h1 className="mt-5 text-balance text-4xl font-black leading-[0.98] tracking-[-0.06em] sm:text-6xl">
+        <h1 className="texto-display mt-5 text-balance text-4xl leading-[0.98] sm:text-6xl">
           {titulo}
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-tenue">

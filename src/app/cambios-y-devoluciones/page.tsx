@@ -6,7 +6,7 @@ export default function CambiosPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
       <header className="max-w-2xl">
-        <h1 className="text-4xl font-black tracking-[-0.05em] sm:text-5xl">
+        <h1 className="texto-display text-4xl sm:text-5xl">
           Cambios y devoluciones
         </h1>
       </header>
