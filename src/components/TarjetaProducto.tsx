@@ -9,9 +9,13 @@ import {
 export function TarjetaProducto({
   producto,
   prioridad = false,
+  className = "",
+  style,
 }: {
   producto: Producto;
   prioridad?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 }) {
   const precio = precioMostrado(producto);
   const enOferta = producto.precioOferta != null;
@@ -19,7 +23,8 @@ export function TarjetaProducto({
   return (
     <Link
       href={`/producto/${producto.slug}`}
-      className="group flex flex-col overflow-hidden rounded-lg border bg-tarjeta transition hover:border-texto"
+      style={style}
+      className={`group flex flex-col overflow-hidden rounded-lg border bg-tarjeta transition hover:border-texto ${className}`}
     >
       <div className="relative aspect-square bg-superficie">
         {producto.foto ? (
@@ -27,7 +32,7 @@ export function TarjetaProducto({
             src={`/${producto.foto}`}
             alt={producto.nombre}
             fill
-            priority={prioridad}
+            preload={prioridad}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
             className="object-contain p-2 transition group-hover:scale-[1.02]"
           />
