@@ -51,7 +51,7 @@ export function VistaCarrito() {
           {items.map((it, i) => (
             <li
               key={`${it.slug}-${it.color ?? ""}-${it.talla ?? ""}-${i}`}
-              className="flex flex-wrap items-center gap-4 rounded-2xl bg-tarjeta p-4 shadow-[0_18px_40px_-32px_rgb(21_22_25/0.55)]"
+              className="flex flex-wrap items-center gap-4 rounded-2xl bg-tarjeta p-4 shadow-[0_18px_40px_-32px_rgb(var(--sombra-rgb)/0.55)]"
             >
               {it.foto ? (
                 <div className="product-stage relative size-20 shrink-0 overflow-hidden rounded-xl">

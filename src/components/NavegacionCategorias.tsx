@@ -39,7 +39,7 @@ export function NavegacionCategorias({
           <Link
             key={categoria.slug}
             href={`/categoria/${categoria.slug}`}
-            className={`group flex min-h-28 items-center gap-4 rounded-2xl border bg-tarjeta p-4 shadow-[0_12px_30px_-26px_rgb(21_22_25/0.7)] hover:-translate-y-0.5 hover:border-acento hover:bg-superficie ${index === 0 ? "sm:col-span-2 lg:col-span-2 lg:row-span-2 lg:min-h-[14.5rem] lg:flex-col lg:items-start lg:justify-between" : ""}`}
+            className={`group flex min-h-28 items-center gap-4 rounded-2xl border bg-tarjeta p-4 shadow-[0_12px_30px_-26px_rgb(var(--sombra-rgb)/0.7)] hover:-translate-y-0.5 hover:border-acento hover:bg-superficie ${index === 0 ? "sm:col-span-2 lg:col-span-2 lg:row-span-2 lg:min-h-[14.5rem] lg:flex-col lg:items-start lg:justify-between" : ""}`}
           >
             <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-superficie text-acento transition group-hover:bg-acento group-hover:text-texto-inverso">
               <Icono aria-hidden="true" size={24} stroke={1.7} />

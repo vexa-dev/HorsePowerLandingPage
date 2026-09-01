@@ -36,7 +36,7 @@ export default function Error({
         </button>
         <Link
           href="/"
-          className="inline-flex min-h-12 items-center rounded-xl border px-5 py-3 font-semibold hover:border-texto hover:bg-superficie"
+          className="boton-secundario inline-flex min-h-12 items-center px-5 py-3"
         >
           Ir al inicio
         </Link>

@@ -39,7 +39,7 @@ export default function UbicanosPage() {
           <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-texto-inverso/70">
             Tienda HorsePower
           </p>
-          <h2 className="mt-5 max-w-sm text-4xl font-black leading-[0.96] tracking-[-0.06em] sm:text-5xl">
+          <h2 className="texto-display mt-5 max-w-sm text-4xl leading-[0.96] sm:text-5xl">
             Estamos
             <br />
             <span className="font-serif font-normal italic text-[#f0b4bd]">
@@ -140,7 +140,7 @@ export default function UbicanosPage() {
             href={mapaHref}
             target="_blank"
             rel="noreferrer"
-            className="absolute right-4 top-4 inline-flex items-center rounded-xl bg-[#ffffff] px-4 py-2.5 text-sm font-bold text-texto shadow-[0_12px_24px_-16px_rgb(21_22_25/0.7)] transition hover:-translate-y-0.5 hover:bg-[#f7f7f4]"
+            className="absolute right-4 top-4 inline-flex items-center rounded-xl bg-[#ffffff] px-4 py-2.5 text-sm font-bold text-texto shadow-[0_12px_24px_-16px_rgb(var(--sombra-rgb)/0.7)] transition hover:-translate-y-0.5 hover:bg-[#f7f7f4]"
           >
             Abrir en Google Maps
           </a>

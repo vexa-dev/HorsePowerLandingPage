@@ -147,7 +147,7 @@ export function Encabezado() {
             priority
             className="size-10 object-contain"
           />
-          <span className="hidden text-[1.05rem] font-black tracking-[0.14em] sm:inline">
+          <span className="texto-display hidden text-[1.05rem] tracking-[0.14em] sm:inline">
             HORSE<span className="text-acento">POWER</span>
           </span>
         </Link>
