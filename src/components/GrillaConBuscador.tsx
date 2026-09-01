@@ -102,7 +102,7 @@ export function GrillaConBuscador({ productos }: { productos: Producto[] }) {
             </button>
           </div>
         ) : (
-          <div className="mt-6 grid grid-cols-2 items-start gap-3 sm:grid-cols-3 lg:gap-5">
+          <div className="mt-6 grid grid-cols-2 items-start gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5">
             {resultado.map((producto, index) => (
               <TarjetaProducto
                 key={producto.slug}
