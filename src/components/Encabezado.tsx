@@ -8,6 +8,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { CATEGORIAS } from "@/lib/tipos";
 import { useCarrito } from "@/lib/carrito";
 
@@ -23,13 +24,38 @@ function claseEnlace(activo: boolean): string {
 
 function MenuProductos({ compacto = false }: { compacto?: boolean }) {
   const pathname = usePathname();
+  const menuRef = useRef<HTMLDetailsElement>(null);
   const activo =
     esRutaActiva(pathname, "/catalogo-completo") ||
     esRutaActiva(pathname, "/categoria") ||
     esRutaActiva(pathname, "/producto");
 
+  useEffect(() => {
+    menuRef.current?.removeAttribute("open");
+  }, [pathname]);
+
+  useEffect(() => {
+    function alClicFuera(evento: PointerEvent) {
+      if (menuRef.current && !menuRef.current.contains(evento.target as Node)) {
+        menuRef.current?.removeAttribute("open");
+      }
+    }
+    function alPresionarTecla(evento: KeyboardEvent) {
+      if (evento.key === "Escape") {
+        menuRef.current?.removeAttribute("open");
+      }
+    }
+
+    document.addEventListener("pointerdown", alClicFuera);
+    document.addEventListener("keydown", alPresionarTecla);
+    return () => {
+      document.removeEventListener("pointerdown", alClicFuera);
+      document.removeEventListener("keydown", alPresionarTecla);
+    };
+  }, []);
+
   return (
-    <details className="product-menu group relative">
+    <details ref={menuRef} className="product-menu group relative">
       <summary
         aria-current={activo ? "page" : undefined}
         className={`${claseEnlace(activo)} inline-flex items-center gap-1.5`}
@@ -45,7 +71,7 @@ function MenuProductos({ compacto = false }: { compacto?: boolean }) {
       <div
         className={`absolute z-50 pt-3 ${compacto ? "left-0 w-[min(calc(100vw-2rem),24rem)]" : "right-0 w-[27rem]"}`}
       >
-        <div className="rounded-2xl border bg-tarjeta p-3 shadow-[0_24px_60px_-30px_rgb(21_22_25/0.3)]">
+        <div className="rounded-2xl border bg-tarjeta p-3 shadow-panel">
           <Link
             href="/catalogo-completo"
             className="group flex items-center justify-between rounded-xl bg-superficie p-3 hover:bg-superficie-fuerte"
