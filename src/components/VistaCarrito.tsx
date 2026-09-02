@@ -13,13 +13,13 @@ import {
   IconBrandWhatsapp,
   IconBuildingStore,
   IconCheck,
-  IconCreditCard,
   IconEye,
   IconMessageDots,
   IconShieldCheck,
   IconShoppingBag,
   IconTrash,
   IconTruckDelivery,
+  IconX,
 } from "@tabler/icons-react";
 
 export function VistaCarrito() {
@@ -27,6 +27,7 @@ export function VistaCarrito() {
   const [modalidad, setModalidad] = useState<"envio" | "tienda">("envio");
   const [nota, setNota] = useState("");
   const [verMensaje, setVerMensaje] = useState(false);
+  const [modalConfirmacionAbierto, setModalConfirmacionAbierto] = useState(false);
 
   if (!listo) {
     return (
@@ -91,10 +92,23 @@ export function VistaCarrito() {
   const hrefWhatsapp = linkCarrito(items, opcionesWhatsapp);
   const mensajePreview = construirMensajeCarrito(items, opcionesWhatsapp);
 
+  const abrirModalPostEnvio = () => {
+    setModalConfirmacionAbierto(true);
+  };
+
   return (
     <div className="space-y-8 pb-24 lg:pb-0">
-      {/* ─── Indicador de Pasos de Compra (Stepper) ────────────────────────── */}
+      {/* ─── Indicador de Pasos de Compra (Stepper Informativo) ─────────────── */}
       <nav aria-label="Progreso del pedido" className="rounded-2xl border border-linea/80 bg-tarjeta p-4 sm:p-5 shadow-2xs">
+        <div className="mb-3 flex items-center justify-between border-b border-linea/60 pb-2.5">
+          <p className="text-xs font-black uppercase tracking-wider text-tenue">
+            ¿Cómo funciona tu compra?
+          </p>
+          <span className="text-[11px] font-semibold text-tenue">
+            Proceso asistido en 3 pasos
+          </span>
+        </div>
+
         <ol className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           {/* Paso 1: Carrito */}
           <li className="flex items-center gap-3">
@@ -102,8 +116,8 @@ export function VistaCarrito() {
               1
             </span>
             <div className="min-w-0">
-              <p className="text-xs font-black uppercase tracking-wider text-acento">Paso 1</p>
-              <p className="truncate text-xs font-bold text-texto">Revisa tu pedido</p>
+              <p className="text-xs font-black uppercase tracking-wider text-acento">Paso 1 (Aquí)</p>
+              <p className="truncate text-xs font-bold text-texto">Revisa prendas y cantidades</p>
             </div>
           </li>
 
@@ -113,8 +127,8 @@ export function VistaCarrito() {
               2
             </span>
             <div className="min-w-0">
-              <p className="text-xs font-bold uppercase tracking-wider text-tenue">Paso 2</p>
-              <p className="truncate text-xs font-bold text-texto">Coordinación por WhatsApp</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-tenue">Paso 2 (Chat)</p>
+              <p className="truncate text-xs font-bold text-texto">Asesoría y confirmación</p>
             </div>
           </li>
 
@@ -124,7 +138,7 @@ export function VistaCarrito() {
               3
             </span>
             <div className="min-w-0">
-              <p className="text-xs font-bold uppercase tracking-wider text-tenue">Paso 3</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-tenue">Paso 3 (Final)</p>
               <p className="truncate text-xs font-bold text-texto">Pago y Entrega / Recojo</p>
             </div>
           </li>
@@ -411,17 +425,18 @@ export function VistaCarrito() {
             )}
           </div>
 
-          {/* Botón Principal WhatsApp - Con UN SOLO ICONO (conIcono={false} para evitar duplicados) */}
+          {/* Botón Principal WhatsApp */}
           <div>
             <BotonWhatsApp
               href={hrefWhatsapp}
               origen="carrito"
               conIcono={false}
+              onClick={abrirModalPostEnvio}
               detalle={{ items: items.length, modalidad }}
-              className="w-full justify-center gap-2.5 py-3.5 text-sm sm:text-base font-black shadow-md hover:shadow-lg transition-all"
+              className="w-full justify-center gap-2.5 py-3.5 text-sm sm:text-base font-black shadow-md hover:shadow-lg transition-all !text-white"
             >
-              <IconBrandWhatsapp size={22} className="shrink-0" stroke={2} />
-              <span>Finalizar compra por WhatsApp</span>
+              <IconBrandWhatsapp size={22} className="shrink-0 text-white" stroke={2} />
+              <span className="text-white">Finalizar compra por WhatsApp</span>
             </BotonWhatsApp>
           </div>
 
@@ -493,6 +508,7 @@ export function VistaCarrito() {
             href={hrefWhatsapp}
             origen="carrito"
             conIcono={false}
+            onClick={abrirModalPostEnvio}
             detalle={{ items: items.length, modalidad }}
             className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-black uppercase tracking-wider !text-white shadow-sm transition active:scale-95"
           >
@@ -501,6 +517,87 @@ export function VistaCarrito() {
           </BotonWhatsApp>
         </div>
       </div>
+
+      {/* ─── Modal de Confirmación Post-WhatsApp (Solución 1) ─────────────── */}
+      {modalConfirmacionAbierto && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-titulo"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
+        >
+          <div className="relative w-full max-w-md rounded-3xl border border-linea bg-tarjeta p-6 sm:p-7 shadow-2xl animate-in zoom-in-95 duration-200">
+            {/* Botón cerrar */}
+            <button
+              type="button"
+              onClick={() => setModalConfirmacionAbierto(false)}
+              className="absolute right-4 top-4 rounded-full p-2 text-tenue hover:bg-superficie hover:text-texto transition"
+              aria-label="Cerrar ventana"
+            >
+              <IconX size={18} />
+            </button>
+
+            {/* Icono de estado WhatsApp */}
+            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200">
+              <IconBrandWhatsapp size={32} stroke={2} />
+            </div>
+
+            <div className="mt-4 text-center">
+              <h3 id="modal-titulo" className="text-lg font-black tracking-tight text-texto">
+                ¡Tu pedido fue derivado a WhatsApp!
+              </h3>
+              <p className="mt-2 text-xs leading-relaxed text-tenue">
+                Se abrió la conversación con HorsePower para confirmar stock, medios de pago (Yape, Plin o Transferencia) y entrega o fecha de recojo en tienda.
+              </p>
+            </div>
+
+            {/* Pregunta de acción */}
+            <div className="mt-6 rounded-2xl border border-linea/80 bg-superficie/60 p-4 text-center">
+              <p className="text-xs font-bold text-texto">
+                ¿Completaste tu compra con la asesora?
+              </p>
+              <p className="mt-1 text-[11px] text-tenue">
+                Si ya coordinaste tu pago, puedes vaciar el carrito para iniciar un nuevo pedido.
+              </p>
+            </div>
+
+            {/* Botones de acción */}
+            <div className="mt-6 space-y-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  vaciar();
+                  setModalConfirmacionAbierto(false);
+                }}
+                className="w-full rounded-xl bg-texto py-3 text-xs font-black uppercase tracking-wider text-texto-inverso shadow-sm transition hover:bg-acento active:scale-98"
+              >
+                ✅ Sí, vaciar mi carrito
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setModalConfirmacionAbierto(false)}
+                className="w-full rounded-xl border border-linea bg-tarjeta py-3 text-xs font-bold text-tenue transition hover:bg-superficie hover:text-texto"
+              >
+                Mantener mis prendas guardadas
+              </button>
+            </div>
+
+            {/* Reintentar abrir enlace si no se abrió */}
+            <p className="mt-4 text-center text-[11px] text-tenue">
+              ¿No se abrió WhatsApp?{" "}
+              <a
+                href={hrefWhatsapp}
+                target="_blank"
+                rel="noreferrer"
+                className="font-bold text-acento underline hover:text-acento-hover"
+              >
+                Abrir chat de nuevo
+              </a>
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
