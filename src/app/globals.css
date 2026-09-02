@@ -159,7 +159,7 @@ select:focus-visible {
 
 .boton-acento {
   background-color: var(--acento);
-  color: var(--texto-inverso);
+  color: var(--texto-inverso) !important;
 }
 
 .boton-acento:hover:not(:disabled) {

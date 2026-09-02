@@ -489,15 +489,16 @@ export function VistaCarrito() {
             </p>
           </div>
 
-          <a
+          <BotonWhatsApp
             href={hrefWhatsapp}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-acento px-4 py-2.5 text-xs font-black uppercase tracking-wider text-texto-inverso shadow-sm transition hover:bg-acento-hover active:scale-95"
+            origen="carrito"
+            conIcono={false}
+            detalle={{ items: items.length, modalidad }}
+            className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-black uppercase tracking-wider !text-white shadow-sm transition active:scale-95"
           >
-            <IconBrandWhatsapp size={18} stroke={2} />
-            <span>Pedir por WhatsApp</span>
-          </a>
+            <IconBrandWhatsapp size={18} stroke={2} className="shrink-0 text-white" />
+            <span className="text-white">Pedir por WhatsApp</span>
+          </BotonWhatsApp>
         </div>
       </div>
     </div>
