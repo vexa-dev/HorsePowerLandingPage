@@ -191,12 +191,12 @@ select:focus-visible {
     backdrop-filter 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Estado transparente/vidrio sobre el Hero en Home */
+/* Estado totalmente transparente con difuminado (glassmorphism) sobre el Hero */
 .header-home-hero {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  background-color: rgb(23 37 43 / 0.42);
-  backdrop-filter: blur(20px) saturate(110%);
-  -webkit-backdrop-filter: blur(20px) saturate(110%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: transparent;
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
   color: var(--texto-inverso);
 }
 
@@ -213,17 +213,17 @@ select:focus-visible {
 }
 
 .header-home-hero .header-nav-link {
-  color: rgba(255, 255, 255, 0.88);
-  text-shadow: 0 1px 2px rgb(var(--sombra-rgb) / 0.65);
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 3px rgb(var(--sombra-rgb) / 0.7);
 }
 
 .header-home-hero .header-nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.16);
+  background-color: rgba(255, 255, 255, 0.18);
   color: #ffffff;
 }
 
 .header-home-hero .nav-link-active {
-  background-color: rgba(255, 255, 255, 0.22);
+  background-color: rgba(255, 255, 255, 0.25);
   color: #ffffff;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
@@ -233,14 +233,14 @@ select:focus-visible {
 }
 
 .header-home-hero .header-mobile-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.18);
 }
 
-/* Estado sólido/blur tras scroll en Home y fijo en subpáginas */
+/* Estado sólido/blur tras scroll en Home y fijo en subpáginas: color de fondo de la página */
 .header-home-scrolled,
 .header-sticky-page {
   border-bottom: 1px solid var(--linea);
-  background-color: rgb(245 247 248 / 0.94);
+  background-color: var(--fondo);
   backdrop-filter: blur(20px) saturate(120%);
   -webkit-backdrop-filter: blur(20px) saturate(120%);
   box-shadow: 0 4px 20px -8px rgb(var(--sombra-rgb) / 0.12);

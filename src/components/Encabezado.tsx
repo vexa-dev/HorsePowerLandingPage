@@ -223,22 +223,13 @@ export function Encabezado() {
       return;
     }
 
-    const sentinel = document.querySelector<HTMLElement>("[data-hero-sentinel]");
-    if (!sentinel) {
-      return;
-    }
+    const alHacerScroll = () => {
+      setDesplazado(window.scrollY > 40);
+    };
 
-    const observer = new IntersectionObserver(
-      ([entrada]) => {
-        if (entrada) {
-          setDesplazado(!entrada.isIntersecting);
-        }
-      },
-      { threshold: 0 },
-    );
-
-    observer.observe(sentinel);
-    return () => observer.disconnect();
+    alHacerScroll();
+    window.addEventListener("scroll", alHacerScroll, { passive: true });
+    return () => window.removeEventListener("scroll", alHacerScroll);
   }, [esInicio]);
 
   // Clases del header según si es Inicio (hero/scrolled) o subpágina
