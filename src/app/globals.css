@@ -214,6 +214,46 @@ img {
     var(--superficie);
 }
 
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* La pista contiene la lista duplicada: -50% = un ciclo sin costura. */
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+.marquee-track {
+  width: max-content;
+  animation: marquee-x var(--marquee-duracion, 60s) linear infinite;
+}
+
+.marquee-track.is-reverse {
+  animation-direction: reverse;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
 @keyframes hero-copy-enter {
   from {
     opacity: 0;

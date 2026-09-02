@@ -1,5 +1,5 @@
 import {
-  IconChecklist,
+  IconArrowRight,
   IconHeartHandshake,
   IconMessageCircle,
   IconSearch,
@@ -7,33 +7,39 @@ import {
   IconShoppingBag,
   IconTruckDelivery,
 } from "@tabler/icons-react";
-import Link from "next/link";
 import type { Metadata } from "next";
-import { PaginaInstitucional } from "@/components/PaginaInstitucional";
+import Link from "next/link";
+import { productosConFoto } from "@/lib/catalogo";
+import { NUMERO_WHATSAPP } from "@/lib/whatsapp";
+import { RevealEnScroll } from "@/components/RevealEnScroll";
+import { TiraProductos } from "./_componentes/TiraProductos";
+
+export const revalidate = 1800;
 
 export const metadata: Metadata = {
   title: "Sobre Nosotros",
   description:
-    "Conoce HorsePower: prendas, casacas y mochilas diseñadas para tu día a día con confección duradera y atención directa por WhatsApp.",
+    "Conoce HorsePower: ropa exterior, casacas y mochilas de confección duradera, con una compra guiada y cerrada por WhatsApp.",
+  alternates: { canonical: "/nosotros" },
 };
 
-const PILARES = [
+const VALORES = [
   {
-    titulo: "Calidad y Resistencia",
+    titulo: "Calidad y resistencia",
     descripcion:
-      "Prendas confeccionadas con materiales de alto rendimiento pensadas para protegerte del frío y resistir el uso diario.",
+      "Prendas confeccionadas con materiales de alto rendimiento, pensadas para abrigar y aguantar el uso diario.",
     icon: IconShieldCheck,
   },
   {
-    titulo: "Atención Cercana",
+    titulo: "Atención cercana",
     descripcion:
-      "Sin procesos automáticos impersonales: coordinas directamente con una asesora que te confirma medidas, fotos y stock real.",
+      "Nada de procesos automáticos: coordinas con una asesora que confirma medidas, fotos y stock real antes de comprar.",
     icon: IconHeartHandshake,
   },
   {
-    titulo: "Envíos a Todo el Perú",
+    titulo: "Envíos a todo el Perú",
     descripcion:
-      "Llegamos a Lima y provincias a través de agencias seguras y servicio de contraentrega o transferencias bancarias.",
+      "Llegamos a Lima y provincias por agencias seguras, con contraentrega o transferencia bancaria.",
     icon: IconTruckDelivery,
   },
 ];
@@ -42,116 +48,175 @@ const PASOS = [
   {
     titulo: "Explora el catálogo",
     descripcion:
-      "Navega por nuestras colecciones de casacas, chompas, mochilas y accesorios con fotos y especificaciones.",
+      "Recorre las colecciones de casacas, chompas, mochilas y accesorios con fotos y especificaciones reales.",
     icon: IconSearch,
   },
   {
     titulo: "Arma tu pedido",
     descripcion:
-      "Selecciona tu color, talla y cantidad favorita directamente desde la ficha de cada modelo.",
+      "Elige color, talla y cantidad desde la ficha de cada modelo y súmalo a tu carrito.",
     icon: IconShoppingBag,
   },
   {
     titulo: "Coordina por WhatsApp",
     descripcion:
-      "Al enviar tu carrito, abrimos WhatsApp con el detalle listo para confirmar disponibilidad y método de entrega.",
+      "Al enviar el carrito abrimos WhatsApp con el detalle listo para confirmar disponibilidad y entrega.",
     icon: IconMessageCircle,
   },
 ];
 
-export default function NosotrosPage() {
+/** Contenedor centrado que comparten todas las bandas. */
+const CONTENIDO = "mx-auto max-w-6xl px-4 sm:px-6 lg:px-8";
+
+/** Etiqueta de sección en versalitas. */
+function Rotulo({ children, id }: { children: string; id?: string }) {
   return (
-    <PaginaInstitucional
-      eyebrow="Sobre HorsePower"
-      titulo="Prendas y accesorios diseñados para acompañar tu ritmo."
-      descripcion="En HorsePower combinamos diseño funcional, abrigo y durabilidad en cada casaca, chompa y accesorio, brindando una experiencia de compra personalizada y transparente."
+    <h2
+      id={id}
+      className="text-[11px] font-bold uppercase tracking-[0.2em] text-tenue"
     >
-      {/* Sección Principal / Manifiesto */}
-      <section className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="rounded-[2rem] bg-texto p-7 text-fondo sm:p-10 flex flex-col justify-between">
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-acento">
-              Nuestra Propuesta
-            </p>
-            <h2 className="texto-display mt-5 max-w-xl text-3xl leading-tight sm:text-4xl text-fondo">
-              Diseño urbano, abrigo confiable y trato directo.
-            </h2>
-            <p className="mt-5 max-w-xl leading-relaxed text-fondo/80 text-sm sm:text-base">
-              Nacimos con el objetivo de ofrecer ropa exterior y accesorios de alta calidad que se adapten al clima y a la rutina urbana. Creemos en el comercio transparente: te mostramos modelos reales y te asesoramos paso a paso antes de que realices tu compra.
-            </p>
+      {children}
+    </h2>
+  );
+}
+
+export default async function NosotrosPage() {
+  const productos = await productosConFoto();
+  const tira = productos.slice(0, 20);
+
+  const whatsappHref = NUMERO_WHATSAPP
+    ? `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent("Hola HorsePower, quiero conocer más sobre sus productos.")}`
+    : "";
+
+  return (
+    <div className="bg-fondo">
+      {/* ─── Encabezado (fondo) ───────────────────────────────────────── */}
+      <section className={`${CONTENIDO} pt-16 pb-20 sm:pt-20 sm:pb-24`}>
+        <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-acento">
+          Sobre HorsePower
+        </p>
+        <div className="mt-5 grid gap-x-10 gap-y-8 lg:grid-cols-[1.7fr_1fr] lg:items-end">
+          <h1 className="texto-display text-pretty text-4xl leading-[1.03] sm:text-6xl">
+            Ropa exterior y accesorios, con trato directo.
+          </h1>
+          <p className="text-lg leading-relaxed text-tenue lg:pb-2">
+            Vendemos casacas, chompas, mochilas y accesorios pensados para el día
+            a día. Trabajamos con catálogo abierto y cerramos cada pedido por
+            WhatsApp, con asesoría real antes de que compres.
+          </p>
+        </div>
+      </section>
+
+      {/* ─── Manifiesto (superficie) ─────────────────────────────────── */}
+      <section className="border-y border-linea bg-superficie-fuerte">
+        <div
+          className={`${CONTENIDO} grid gap-x-10 gap-y-6 py-16 sm:py-20 lg:grid-cols-[1.5fr_1fr]`}
+        >
+          <h2 className="texto-display text-2xl leading-snug text-texto sm:text-4xl">
+            Creemos en el comercio directo y transparente: modelos reales,
+            asesoría antes de comprar y cierre por WhatsApp.
+          </h2>
+          <p className="leading-relaxed text-tenue lg:pt-2">
+            Nuestra propuesta es simple: ropa exterior y accesorios de buena
+            calidad, mostrados tal cual son, con alguien que te acompaña paso a
+            paso. Sin pasarelas de pago obligatorias y sin registros.
+          </p>
+        </div>
+      </section>
+
+      {/* ─── Valores (fondo) ─────────────────────────────────────────── */}
+      <section className={`${CONTENIDO} py-16 sm:py-20`} aria-labelledby="valores">
+        <Rotulo id="valores">Lo que nos define</Rotulo>
+        <div className="mt-8 grid gap-x-10 gap-y-10 border-t border-linea pt-10 sm:grid-cols-3">
+          {VALORES.map(({ titulo, descripcion, icon: Icono }, i) => (
+            <RevealEnScroll key={titulo} delay={i * 0.08}>
+              <div className="sm:border-l sm:border-linea sm:pl-8 sm:first:border-l-0 sm:first:pl-0">
+                <Icono size={24} stroke={1.8} className="text-acento" />
+                <h3 className="mt-5 text-lg font-black text-texto">{titulo}</h3>
+                <p className="mt-2.5 leading-relaxed text-tenue">
+                  {descripcion}
+                </p>
+              </div>
+            </RevealEnScroll>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── Cómo comprar (superficie) ──────────────────────────────── */}
+      <section className="border-y border-linea bg-superficie-fuerte">
+        <div
+          className={`${CONTENIDO} py-16 sm:py-20`}
+          aria-labelledby="proceso"
+        >
+          <Rotulo id="proceso">Cómo comprar</Rotulo>
+          <ol className="mt-8 grid gap-x-10 gap-y-10 border-t border-linea pt-10 md:grid-cols-3">
+            {PASOS.map(({ titulo, descripcion, icon: Icono }, index) => (
+              <RevealEnScroll key={titulo} delay={index * 0.08}>
+                <li className="md:border-l md:border-linea md:pl-8 md:first:border-l-0 md:first:pl-0">
+                  <div className="flex items-center gap-3">
+                    <span className="texto-display text-3xl text-acento sm:text-4xl">
+                      0{index + 1}
+                    </span>
+                    <span className="h-px flex-1 bg-linea" aria-hidden />
+                    <Icono size={20} stroke={1.8} className="text-tenue" />
+                  </div>
+                  <h3 className="mt-5 text-lg font-bold text-texto">{titulo}</h3>
+                  <p className="mt-2 leading-relaxed text-tenue">{descripcion}</p>
+                </li>
+              </RevealEnScroll>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ─── Tira de productos (fondo) ──────────────────────────────── */}
+      {tira.length > 0 && (
+        <section className={`${CONTENIDO} py-16 sm:py-20`}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-tenue">
+            Algunos de nuestros modelos
+          </p>
+          <div className="mt-8">
+            <TiraProductos productos={tira} duracion="90s" />
           </div>
-          <div className="mt-8 pt-6 border-t border-fondo/15 flex flex-wrap gap-4">
+        </section>
+      )}
+
+      {/* ─── Cierre (superficie) ────────────────────────────────────── */}
+      <section className="border-t border-linea bg-superficie-fuerte">
+        <div
+          className={`${CONTENIDO} grid gap-6 py-16 sm:py-20 lg:grid-cols-[1fr_auto] lg:items-center`}
+        >
+          <h2 className="texto-display text-2xl leading-tight text-texto sm:text-3xl">
+            ¿Quieres ver todo el catálogo o visitarnos?
+          </h2>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <Link
-              href="/categoria/casacas-y-chompas"
-              className="boton-acento inline-flex min-h-11 items-center px-5 py-2.5 text-xs font-bold"
+              href="/catalogo-completo"
+              className="boton-oscuro inline-flex min-h-11 items-center gap-2 px-5 py-2.5 text-xs font-bold"
             >
-              Ver Casacas y Chompas
+              Ver catálogo completo
+              <IconArrowRight size={15} stroke={2.4} />
             </Link>
             <Link
               href="/ubicanos"
-              className="inline-flex min-h-11 items-center rounded-xl border border-fondo/20 px-5 py-2.5 text-xs font-bold text-fondo hover:bg-fondo/10 transition"
+              className="boton-secundario inline-flex min-h-11 items-center bg-tarjeta px-5 py-2.5 text-xs font-bold"
             >
-              Conoce nuestra tienda
+              Cómo llegar a la tienda
             </Link>
+            {whatsappHref && (
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center gap-1.5 px-2 py-2.5 text-xs font-bold text-acento underline-offset-4 hover:underline"
+              >
+                <IconMessageCircle size={15} stroke={2} />
+                Escribir por WhatsApp
+              </a>
+            )}
           </div>
         </div>
-
-        {/* Pilares */}
-        <aside className="space-y-4">
-          {PILARES.map(({ titulo, descripcion, icon: Icono }) => (
-            <div
-              key={titulo}
-              className="rounded-[1.5rem] border bg-tarjeta p-6 transition hover:border-texto hover:shadow-sm"
-            >
-              <div className="flex items-center gap-3">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-superficie text-acento">
-                  <Icono size={20} stroke={2} />
-                </span>
-                <h3 className="font-bold text-base text-texto">{titulo}</h3>
-              </div>
-              <p className="mt-2.5 text-xs leading-relaxed text-tenue">
-                {descripcion}
-              </p>
-            </div>
-          ))}
-        </aside>
       </section>
-
-      {/* Sección Cómo Funciona */}
-      <section className="mt-16 sm:mt-20" aria-labelledby="como-funciona">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-acento">
-              Proceso de Compra
-            </p>
-            <h2 id="como-funciona" className="texto-display mt-2 text-2xl sm:text-3xl font-black">
-              Cómo comprar en HorsePower
-            </h2>
-          </div>
-          <p className="text-xs text-tenue max-w-sm">
-            Sin registros complicados ni pasarelas obligatorias. Todo rápido y seguro por chat.
-          </p>
-        </div>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {PASOS.map(({ titulo, descripcion, icon: Icono }, index) => (
-            <article key={titulo} className="rounded-2xl border bg-tarjeta p-6 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex size-12 items-center justify-center rounded-xl bg-superficie text-acento">
-                    <Icono aria-hidden="true" size={24} stroke={1.8} />
-                  </span>
-                  <span className="text-xs font-black tabular-nums text-tenue">
-                    0{index + 1}
-                  </span>
-                </div>
-                <h3 className="mt-6 text-lg font-bold text-texto">{titulo}</h3>
-                <p className="mt-2 text-xs leading-relaxed text-tenue">{descripcion}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-    </PaginaInstitucional>
+    </div>
   );
 }
