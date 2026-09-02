@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CATEGORIAS, formatearSoles, precioMostrado } from "@/lib/tipos";
+import { CATEGORIAS } from "@/lib/tipos";
 import { destacadosHP, productosConFoto } from "@/lib/catalogo";
 import { TarjetaProducto } from "@/components/TarjetaProducto";
 import { NavegacionCategorias } from "@/components/NavegacionCategorias";
@@ -24,139 +24,125 @@ export default async function Home() {
     nombre,
   }));
 
-  const heroProducto = destacados[0];
-  const precioHero = heroProducto ? precioMostrado(heroProducto) : undefined;
-
   return (
-    <div className="mx-auto max-w-6xl px-4">
-      <section
-        className={`grid items-center gap-10 py-12 sm:py-16 lg:gap-16 lg:py-20 ${
-          heroProducto ? "lg:grid-cols-[1.1fr_1fr]" : ""
-        }`}
-      >
-        <div className="hero-copy">
-          <span className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold text-tenue">
-            Catálogo actualizado cada semana
-          </span>
-          <h1 className="texto-display mt-4 max-w-xl text-4xl leading-tight sm:text-5xl">
-            Casacas, chompas y mochilas{" "}
-            <span className="text-acento">HorsePower</span>
-          </h1>
-          <p className="mt-4 max-w-xl text-tenue">
-            Explora el catálogo, arma tu pedido y coordínalo por WhatsApp. El
-            precio y la disponibilidad se confirman por el chat, sin
-            pasarela de pago.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/catalogo-completo" className="boton-oscuro px-5 py-2.5">
-              Ver catálogo completo
-            </Link>
-            {/* Ancla dentro de la misma página: <a> nativa, no next/link
-                (Link no dispara el scroll al hash en navegación same-route). */}
-            <a href="#destacados" className="boton-secundario px-5 py-2.5">
-              Ver destacados
-            </a>
+    <div>
+      <section className="hero-photo relative isolate min-h-[clamp(32rem,calc(100dvh-4.5rem),44rem)] overflow-hidden bg-texto text-texto-inverso">
+        <span
+          data-hero-sentinel
+          aria-hidden="true"
+          className="absolute left-0 top-0 h-px w-px"
+        />
+        <Image
+          src="/hero/horsepower-portada.jpeg"
+          alt="Interior de tienda con mochilas y prendas en exhibición"
+          fill
+          preload
+          sizes="100vw"
+          className="hero-photo-image object-cover"
+        />
+        <div className="hero-photo-overlay absolute inset-0 z-10" aria-hidden="true" />
+        <div className="relative z-20 mx-auto flex min-h-[clamp(32rem,calc(100dvh-4.5rem),44rem)] max-w-7xl items-center px-4 pb-16 pt-28 sm:px-6 sm:pb-20 sm:pt-24 lg:px-8 lg:pt-16">
+          <div className="hero-copy max-w-xl">
+            <span className="inline-flex items-center rounded-full border border-white/30 bg-texto/25 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+              Catálogo HorsePower
+            </span>
+            <h1 className="texto-display mt-5 max-w-2xl text-4xl leading-[1.02] tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Casacas, chompas y mochilas
+            </h1>
+            <p className="mt-5 max-w-lg text-sm leading-relaxed text-white/85 sm:text-base">
+              Modelos para tu día a día. Arma tu pedido y coordina la compra por
+              WhatsApp.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link href="/catalogo-completo" className="boton-acento px-5 py-3">
+                Explorar catálogo
+              </Link>
+              {/* Ancla dentro de la misma página: <a> nativa, no next/link
+                  (Link no dispara el scroll al hash en navegación same-route). */}
+              <a
+                href="#destacados"
+                className="inline-flex items-center rounded-md border border-white/50 px-5 py-3 font-semibold text-white hover:bg-white/10"
+              >
+                Ver destacados
+              </a>
+            </div>
           </div>
+        </div>
+        <div
+          className="hero-photo-curve absolute inset-x-[-8%] bottom-[-1px] z-30 h-10 bg-fondo sm:h-14"
+          aria-hidden="true"
+        />
+      </section>
 
-          <dl className="mt-8 grid max-w-md grid-cols-3 gap-4 border-t border-linea pt-6">
+      <div className="mx-auto max-w-6xl px-4">
+        <section
+          className="border-b border-linea py-7 sm:py-8"
+          aria-label="Resumen del catálogo"
+        >
+          <dl className="grid grid-cols-3 gap-4 sm:max-w-xl sm:gap-8">
             <div>
-              <dt className="texto-display text-2xl">{todos.length}+</dt>
-              <dd className="text-xs text-tenue">modelos</dd>
+              <dt className="texto-display text-2xl sm:text-3xl">{todos.length}+</dt>
+              <dd className="mt-1 text-xs text-tenue">modelos</dd>
             </div>
             <div>
-              <dt className="texto-display text-2xl">{porCategoria.length}</dt>
-              <dd className="text-xs text-tenue">categorías</dd>
+              <dt className="texto-display text-2xl sm:text-3xl">{porCategoria.length}</dt>
+              <dd className="mt-1 text-xs text-tenue">categorías</dd>
             </div>
             <div>
-              <dt className="texto-display text-2xl">100%</dt>
-              <dd className="text-xs text-tenue">por WhatsApp</dd>
+              <dt className="texto-display text-2xl sm:text-3xl">100%</dt>
+              <dd className="mt-1 text-xs text-tenue">por WhatsApp</dd>
             </div>
           </dl>
-        </div>
+        </section>
 
-        {heroProducto && (
-          <div className="hero-stage">
+        <section className="py-6">
+          <RevealEnScroll>
+            <h2 className="texto-display mb-4 text-2xl">Categorías</h2>
+            <NavegacionCategorias categorias={porCategoria} />
+          </RevealEnScroll>
+        </section>
+
+        <section
+          id="destacados"
+          className="scroll-mt-[160px] py-10 sm:py-14 lg:scroll-mt-[88px]"
+        >
+          <div className="mb-4 flex items-end justify-between">
+            <h2 className="texto-display text-2xl">Destacados</h2>
             <Link
-              href={`/producto/${heroProducto.slug}`}
-              className="product-stage group relative block aspect-square overflow-hidden rounded-3xl border border-linea shadow-lg"
+              href="/catalogo-completo"
+              className="text-sm font-semibold text-acento hover:underline"
             >
-              {heroProducto.foto && (
-                <Image
-                  src={`/${heroProducto.foto}`}
-                  alt={heroProducto.nombre}
-                  fill
-                  preload
-                  sizes="(max-width: 1024px) 100vw, 480px"
-                  className="object-contain p-8 transition group-hover:scale-[1.03]"
-                />
-              )}
-              <span className="absolute left-4 top-4 rounded-full bg-acento px-3 py-1 text-xs font-bold text-texto-inverso">
-                Destacado
-              </span>
-              <div className="absolute inset-x-4 bottom-4 rounded-2xl bg-tarjeta/90 p-3 backdrop-blur">
-                <p className="line-clamp-1 text-sm font-semibold">
-                  {heroProducto.nombre}
-                </p>
-                {precioHero != null ? (
-                  <p className="text-sm font-bold text-acento">
-                    {formatearSoles(precioHero)}
-                  </p>
-                ) : (
-                  <p className="text-xs text-tenue">Consultar por WhatsApp</p>
-                )}
-              </div>
+              Ver todo
             </Link>
           </div>
-        )}
-      </section>
-
-      <section className="py-6">
-        <RevealEnScroll>
-          <h2 className="texto-display mb-4 text-2xl">Categorías</h2>
-          <NavegacionCategorias categorias={porCategoria} />
-        </RevealEnScroll>
-      </section>
-
-      <section
-        id="destacados"
-        className="scroll-mt-[160px] py-10 sm:py-14 lg:scroll-mt-[88px]"
-      >
-        <div className="mb-4 flex items-end justify-between">
-          <h2 className="texto-display text-2xl">Destacados</h2>
-          <Link
-            href="/catalogo-completo"
-            className="text-sm font-semibold text-acento hover:underline"
-          >
-            Ver todo
-          </Link>
-        </div>
-        {destacados.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {destacados.map((p, i) => (
-              <RevealEnScroll
-                key={p.slug}
-                delay={Math.min(i, 7) * 0.06}
-                className="h-full"
-              >
-                <TarjetaProducto producto={p} className="h-full" />
-              </RevealEnScroll>
-            ))}
-          </div>
-        ) : (
-          <EstadoVacio
-            titulo="Aún no hay productos con foto en el catálogo."
-            descripcion="Mientras se actualiza, revisa el catálogo completo donde también están los modelos sin foto."
-            accion={
-              <Link
-                href="/catalogo-completo"
-                className="boton-oscuro inline-flex min-h-12 items-center px-5 py-3"
-              >
-                Ver catálogo completo
-              </Link>
-            }
-          />
-        )}
-      </section>
+          {destacados.length > 0 ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {destacados.map((p, i) => (
+                <RevealEnScroll
+                  key={p.slug}
+                  delay={Math.min(i, 7) * 0.06}
+                  className="h-full"
+                >
+                  <TarjetaProducto producto={p} className="h-full" />
+                </RevealEnScroll>
+              ))}
+            </div>
+          ) : (
+            <EstadoVacio
+              titulo="Aún no hay productos con foto en el catálogo."
+              descripcion="Mientras se actualiza, revisa el catálogo completo donde también están los modelos sin foto."
+              accion={
+                <Link
+                  href="/catalogo-completo"
+                  className="boton-oscuro inline-flex min-h-12 items-center px-5 py-3"
+                >
+                  Ver catálogo completo
+                </Link>
+              }
+            />
+          )}
+        </section>
+      </div>
     </div>
   );
 }

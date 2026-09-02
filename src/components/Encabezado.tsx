@@ -8,7 +8,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CATEGORIAS } from "@/lib/tipos";
 import { useCarrito } from "@/lib/carrito";
 
@@ -18,8 +19,8 @@ function esRutaActiva(pathname: string, ruta: string): boolean {
 
 function claseEnlace(activo: boolean): string {
   return activo
-    ? "nav-link-active whitespace-nowrap rounded-lg px-3 py-2 text-[11px] font-bold uppercase tracking-[0.12em]"
-    : "whitespace-nowrap rounded-lg px-3 py-2 text-[11px] font-bold uppercase tracking-[0.12em] text-tenue hover:bg-superficie hover:text-texto";
+    ? "header-nav-link nav-link-active whitespace-nowrap rounded-lg px-3 py-2 text-xs font-extrabold uppercase tracking-[0.08em]"
+    : "header-nav-link whitespace-nowrap rounded-lg px-3 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-tenue hover:bg-superficie hover:text-texto";
 }
 
 function MenuProductos({ compacto = false }: { compacto?: boolean }) {
@@ -126,13 +127,50 @@ function EnlaceNav({ href, children }: { href: string; children: string }) {
   );
 }
 
+function HeaderInicio({ children }: { children: ReactNode }) {
+  const [desplazado, setDesplazado] = useState(false);
+
+  useEffect(() => {
+    const sentinel = document.querySelector<HTMLElement>(
+      "[data-hero-sentinel]",
+    );
+
+    if (!sentinel) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entrada]) => {
+        if (entrada) {
+          setDesplazado(!entrada.isIntersecting);
+        }
+      },
+      { threshold: 0 },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <header
+      className={`header-home fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-4 ${desplazado ? "header-home-scrolled" : ""}`}
+    >
+      {children}
+    </header>
+  );
+}
+
 export function Encabezado() {
   const pathname = usePathname();
   const { cantidadTotal, listo } = useCarrito();
   const carritoActivo = esRutaActiva(pathname, "/carrito");
+  const esInicio = pathname === "/";
 
-  return (
-    <header className="sticky top-0 z-40 border-b bg-fondo/95 backdrop-blur">
+  const claseHeader = "sticky top-0 z-40 border-b bg-fondo/95 backdrop-blur";
+
+  const contenidoHeader = (
+    <>
       <div className="mx-auto grid min-h-18 max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
@@ -145,9 +183,9 @@ export function Encabezado() {
             width={44}
             height={44}
             priority
-            className="size-10 object-contain"
+            className="header-logo size-10 object-contain"
           />
-          <span className="texto-display hidden text-[1.05rem] tracking-[0.14em] sm:inline">
+          <span className="header-brand texto-display hidden text-[1.05rem] tracking-[0.14em] sm:inline">
             HORSE<span className="text-acento">POWER</span>
           </span>
         </Link>
@@ -165,12 +203,13 @@ export function Encabezado() {
         <Link
           href="/carrito"
           aria-current={carritoActivo ? "page" : undefined}
-          className={`${carritoActivo ? "nav-link-active" : "border hover:border-texto hover:bg-superficie"} inline-flex min-h-10 shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-[11px] font-bold uppercase tracking-[0.12em]`}
+          aria-label={`Carrito${listo && cantidadTotal > 0 ? `, ${cantidadTotal} ${cantidadTotal === 1 ? "producto" : "productos"}` : ""}`}
+          className={`${carritoActivo ? "nav-link-active" : ""} header-cart relative inline-flex h-11 w-11 shrink-0 items-center justify-center gap-2 rounded-lg px-0 text-xs font-extrabold uppercase tracking-[0.08em] sm:h-12 sm:w-auto sm:px-5`}
         >
-          <IconShoppingBag aria-hidden="true" size={17} stroke={1.9} />
+          <IconShoppingBag aria-hidden="true" size={19} stroke={1.9} />
           <span className="hidden sm:inline">Carrito</span>
           {listo && cantidadTotal > 0 && (
-            <span className="min-w-5 rounded-full bg-acento px-1.5 text-center text-xs font-bold tracking-normal text-texto-inverso">
+            <span className="absolute -right-1 -top-1 min-w-5 rounded-full border-2 border-acento bg-texto-inverso px-1.5 text-center text-[11px] font-bold leading-4 tracking-normal text-acento sm:static sm:border-0 sm:text-xs sm:leading-normal">
               {cantidadTotal}
             </span>
           )}
@@ -186,6 +225,12 @@ export function Encabezado() {
         <EnlaceNav href="/nosotros">Nosotros</EnlaceNav>
         <EnlaceNav href="/ubicanos">Ubícanos</EnlaceNav>
       </nav>
-    </header>
+    </>
+  );
+
+  return esInicio ? (
+    <HeaderInicio>{contenidoHeader}</HeaderInicio>
+  ) : (
+    <header className={claseHeader}>{contenidoHeader}</header>
   );
 }
