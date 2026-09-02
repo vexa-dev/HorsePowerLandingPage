@@ -14,6 +14,11 @@ export interface ItemCarrito {
   cantidad: number;
 }
 
+export interface OpcionesCarritoWhatsApp {
+  modalidad?: "envio" | "tienda";
+  nota?: string;
+}
+
 function linkBase(texto: string): string {
   const q = `text=${encodeURIComponent(texto)}`;
   return NUMERO_WHATSAPP
@@ -29,7 +34,10 @@ export function linkConsultaProducto(p: Pick<Producto, "nombre" | "slug">): stri
 }
 
 /** Mensaje del carrito completo. */
-export function construirMensajeCarrito(items: ItemCarrito[]): string {
+export function construirMensajeCarrito(
+  items: ItemCarrito[],
+  opciones?: OpcionesCarritoWhatsApp,
+): string {
   const lineas: string[] = ["Hola HorsePower, quiero hacer este pedido:", ""];
   let total = 0;
   let hayPrecios = true;
@@ -49,14 +57,29 @@ export function construirMensajeCarrito(items: ItemCarrito[]): string {
 
   lineas.push("");
   if (hayPrecios) lineas.push(`Total estimado: ${formatearSoles(total)}`);
+
+  if (opciones?.modalidad === "tienda") {
+    lineas.push("📍 Modalidad preferida: Recojo en tienda (Pago contraentrega)");
+  } else if (opciones?.modalidad === "envio") {
+    lineas.push("🚚 Modalidad preferida: Envío a domicilio / provincia");
+  }
+
+  if (opciones?.nota && opciones.nota.trim()) {
+    lineas.push(`📝 Nota del cliente: "${opciones.nota.trim()}"`);
+  }
+
+  lineas.push("");
   lineas.push(
     "El precio final y la disponibilidad se confirman por este chat.",
   );
   return lineas.join("\n");
 }
 
-export function linkCarrito(items: ItemCarrito[]): string {
-  return linkBase(construirMensajeCarrito(items));
+export function linkCarrito(
+  items: ItemCarrito[],
+  opciones?: OpcionesCarritoWhatsApp,
+): string {
+  return linkBase(construirMensajeCarrito(items, opciones));
 }
 
 export { precioMostrado };
