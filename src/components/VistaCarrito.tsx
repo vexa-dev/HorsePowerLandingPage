@@ -98,48 +98,60 @@ export function VistaCarrito() {
 
   return (
     <div className="space-y-8 pb-24 lg:pb-0">
-      {/* ─── Indicador de Pasos de Compra (Stepper Informativo) ─────────────── */}
-      <nav aria-label="Progreso del pedido" className="rounded-2xl border border-linea/80 bg-tarjeta p-4 sm:p-5 shadow-2xs">
-        <div className="mb-3 flex items-center justify-between border-b border-linea/60 pb-2.5">
-          <p className="text-xs font-black uppercase tracking-wider text-tenue">
-            ¿Cómo funciona tu compra?
-          </p>
-          <span className="text-[11px] font-semibold text-tenue">
-            Proceso asistido en 3 pasos
-          </span>
-        </div>
-
-        <ol className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-          {/* Paso 1: Carrito */}
-          <li className="flex items-center gap-3">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-acento font-black text-xs text-texto-inverso shadow-xs">
+      {/* ─── Ruta de Compra Horizontal (Camino estilizado y compacto) ───────── */}
+      <nav aria-label="Ruta de compra" className="mx-auto max-w-4xl px-2 py-1">
+        <ol className="flex items-center justify-between gap-1.5 sm:gap-4">
+          {/* Paso 1: Aquí */}
+          <li className="flex items-center gap-2 sm:gap-3">
+            <span className="flex size-7 sm:size-8 shrink-0 items-center justify-center rounded-full bg-acento text-[11px] sm:text-xs font-black text-texto-inverso shadow-2xs ring-2 ring-acento/20">
               1
             </span>
-            <div className="min-w-0">
-              <p className="text-xs font-black uppercase tracking-wider text-acento">Paso 1 (Aquí)</p>
-              <p className="truncate text-xs font-bold text-texto">Revisa prendas y cantidades</p>
+            <div className="leading-tight">
+              <span className="block text-xs sm:text-sm font-black text-texto">
+                Revisa prendas{" "}
+                <span className="rounded-md bg-acento/10 px-1.5 py-0.5 text-[10px] font-black uppercase text-acento">
+                  Aquí
+                </span>
+              </span>
+              <span className="hidden text-[11px] text-tenue sm:block">Tallas y modelos</span>
             </div>
           </li>
 
-          {/* Paso 2: WhatsApp */}
-          <li className="flex items-center gap-3 border-t sm:border-t-0 sm:border-l border-linea/60 pt-3 sm:pt-0 sm:pl-4">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-superficie font-bold text-xs text-tenue">
+          {/* Línea conectora 1 a 2 */}
+          <li className="h-0.5 min-w-4 flex-1 bg-gradient-to-r from-acento/80 to-linea sm:mx-2" aria-hidden="true" />
+
+          {/* Paso 2: Chat */}
+          <li className="flex items-center gap-2 sm:gap-3">
+            <span className="flex size-7 sm:size-8 shrink-0 items-center justify-center rounded-full border border-linea bg-superficie text-[11px] sm:text-xs font-bold text-tenue">
               2
             </span>
-            <div className="min-w-0">
-              <p className="text-xs font-bold uppercase tracking-wider text-tenue">Paso 2 (Chat)</p>
-              <p className="truncate text-xs font-bold text-texto">Asesoría y confirmación</p>
+            <div className="leading-tight">
+              <span className="block text-xs sm:text-sm font-bold text-texto">
+                Coordinación{" "}
+                <span className="rounded-md bg-superficie px-1.5 py-0.5 text-[10px] font-bold uppercase text-tenue border border-linea/60">
+                  Chat
+                </span>
+              </span>
+              <span className="hidden text-[11px] text-tenue sm:block">Stock por WhatsApp</span>
             </div>
           </li>
 
-          {/* Paso 3: Entrega o Recojo */}
-          <li className="flex items-center gap-3 border-t sm:border-t-0 sm:border-l border-linea/60 pt-3 sm:pt-0 sm:pl-4">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-superficie font-bold text-xs text-tenue">
+          {/* Línea conectora 2 a 3 */}
+          <li className="h-0.5 min-w-4 flex-1 bg-linea sm:mx-2" aria-hidden="true" />
+
+          {/* Paso 3: Final */}
+          <li className="flex items-center gap-2 sm:gap-3">
+            <span className="flex size-7 sm:size-8 shrink-0 items-center justify-center rounded-full border border-linea bg-superficie text-[11px] sm:text-xs font-bold text-tenue">
               3
             </span>
-            <div className="min-w-0">
-              <p className="text-xs font-bold uppercase tracking-wider text-tenue">Paso 3 (Final)</p>
-              <p className="truncate text-xs font-bold text-texto">Pago y Entrega / Recojo</p>
+            <div className="leading-tight">
+              <span className="block text-xs sm:text-sm font-bold text-texto">
+                Pago y Entrega{" "}
+                <span className="rounded-md bg-superficie px-1.5 py-0.5 text-[10px] font-bold uppercase text-tenue border border-linea/60">
+                  Final
+                </span>
+              </span>
+              <span className="hidden text-[11px] text-tenue sm:block">Envío o en tienda</span>
             </div>
           </li>
         </ol>
