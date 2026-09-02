@@ -98,21 +98,21 @@ export function VistaCarrito() {
 
   return (
     <div className="space-y-8 pb-24 lg:pb-0">
-      {/* ─── Ruta de Compra Horizontal (Camino difuminado y sutil) ─────────── */}
+      {/* ─── Ruta de Compra Horizontal (Camino difuminado sin bordes) ───────── */}
       <nav
         aria-label="Ruta del pedido"
-        className="mx-auto max-w-4xl rounded-2xl border border-linea/50 bg-superficie/50 px-3.5 py-3 backdrop-blur-xs sm:px-6"
+        className="mx-auto max-w-4xl rounded-2xl bg-superficie/60 px-3.5 py-3 sm:px-6"
       >
         <ol className="flex items-center justify-between gap-2 sm:gap-4">
           {/* Paso 1: Aquí */}
           <li className="flex items-center gap-2 sm:gap-2.5">
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-linea bg-tarjeta text-xs font-bold text-texto shadow-2xs">
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-tarjeta text-xs font-bold text-texto shadow-2xs">
               1
             </span>
             <div className="leading-tight">
               <span className="block text-xs font-bold text-texto sm:text-sm">
                 Revisa prendas{" "}
-                <span className="rounded-md bg-tarjeta px-1.5 py-0.5 text-[10px] font-semibold uppercase text-tenue border border-linea/60">
+                <span className="rounded-md bg-tarjeta/80 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-tenue">
                   Aquí
                 </span>
               </span>
@@ -121,17 +121,17 @@ export function VistaCarrito() {
           </li>
 
           {/* Línea conectora 1 a 2 */}
-          <li className="h-px min-w-3 flex-1 bg-linea/80 sm:mx-2" aria-hidden="true" />
+          <li className="h-px min-w-3 flex-1 bg-linea/60 sm:mx-2" aria-hidden="true" />
 
           {/* Paso 2: Chat */}
           <li className="flex items-center gap-2 sm:gap-2.5">
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-linea bg-tarjeta text-xs font-bold text-texto shadow-2xs">
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-tarjeta text-xs font-bold text-texto shadow-2xs">
               2
             </span>
             <div className="leading-tight">
               <span className="block text-xs font-bold text-texto sm:text-sm">
                 Coordinación{" "}
-                <span className="rounded-md bg-tarjeta px-1.5 py-0.5 text-[10px] font-semibold uppercase text-tenue border border-linea/60">
+                <span className="rounded-md bg-tarjeta/80 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-tenue">
                   Chat
                 </span>
               </span>
@@ -140,17 +140,17 @@ export function VistaCarrito() {
           </li>
 
           {/* Línea conectora 2 a 3 */}
-          <li className="h-px min-w-3 flex-1 bg-linea/80 sm:mx-2" aria-hidden="true" />
+          <li className="h-px min-w-3 flex-1 bg-linea/60 sm:mx-2" aria-hidden="true" />
 
           {/* Paso 3: Final */}
           <li className="flex items-center gap-2 sm:gap-2.5">
-            <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-linea bg-tarjeta text-xs font-bold text-texto shadow-2xs">
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-tarjeta text-xs font-bold text-texto shadow-2xs">
               3
             </span>
             <div className="leading-tight">
               <span className="block text-xs font-bold text-texto sm:text-sm">
                 Pago y Entrega{" "}
-                <span className="rounded-md bg-tarjeta px-1.5 py-0.5 text-[10px] font-semibold uppercase text-tenue border border-linea/60">
+                <span className="rounded-md bg-tarjeta/80 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-tenue">
                   Final
                 </span>
               </span>
