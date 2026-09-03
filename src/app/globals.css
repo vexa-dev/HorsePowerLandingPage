@@ -236,6 +236,16 @@ select:focus-visible {
   background-color: rgba(255, 255, 255, 0.18);
 }
 
+/* El menú desplegable flotante aísla su contenido de la transparencia del Hero */
+.header-dropdown-panel {
+  color: var(--texto) !important;
+  text-shadow: none !important;
+}
+
+.header-dropdown-panel a {
+  text-shadow: none !important;
+}
+
 /* Estado sólido/blur tras scroll en Home y fijo en subpáginas: color de fondo de la página */
 .header-home-scrolled,
 .header-sticky-page {

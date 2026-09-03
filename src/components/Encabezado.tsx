@@ -99,7 +99,7 @@ function MenuProductosDesktop() {
 
       {abierto && (
         <div className="absolute left-1/2 top-full z-50 mt-3 w-[32rem] -translate-x-1/2 animate-in fade-in slide-in-from-top-2 duration-150">
-          <div className="rounded-2xl border border-linea bg-tarjeta/98 p-3 shadow-panel backdrop-blur-xl">
+          <div className="header-dropdown-panel rounded-2xl border border-linea bg-tarjeta/98 p-3 shadow-panel backdrop-blur-xl">
             {/* Acceso directo a Catálogo Completo */}
             <Link
               href="/catalogo-completo"
@@ -111,10 +111,10 @@ function MenuProductosDesktop() {
                   <IconShoppingBag size={20} stroke={2} />
                 </div>
                 <div>
-                  <span className="block text-sm font-bold text-texto">
+                  <span className="block text-sm font-bold !text-texto">
                     Catálogo completo
                   </span>
-                  <span className="block text-xs text-tenue">
+                  <span className="block text-xs !text-tenue">
                     Ver todos los modelos disponibles
                   </span>
                 </div>
@@ -149,16 +149,22 @@ function MenuProductosDesktop() {
                       className={`mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg transition ${
                         categoriaActiva
                           ? "bg-acento text-texto-inverso"
-                          : "bg-superficie text-tenue group-hover:bg-acento/15 group-hover:text-acento"
+                          : "bg-superficie !text-tenue group-hover:bg-acento/15 group-hover:!text-acento"
                       }`}
                     >
                       <Icono size={17} stroke={1.8} />
                     </div>
                     <div className="min-w-0">
-                      <span className="block truncate text-xs font-bold leading-tight">
+                      <span
+                        className={`block truncate text-xs font-bold leading-tight transition-colors ${
+                          categoriaActiva
+                            ? "!text-acento"
+                            : "!text-texto group-hover:!text-acento"
+                        }`}
+                      >
                         {cat.nombre}
                       </span>
-                      <span className="mt-0.5 block truncate text-[11px] text-tenue">
+                      <span className="mt-0.5 block truncate text-[11px] !text-tenue">
                         {DESCRIPCIONES_CATEGORIA[cat.slug] || "Ver colección"}
                       </span>
                     </div>
