@@ -21,7 +21,7 @@ import { NUMERO_WHATSAPP } from "@/lib/whatsapp";
 import { RevealEnScroll } from "@/components/RevealEnScroll";
 import { TiraProductos } from "./_componentes/TiraProductos";
 
-export const revalidate = 1800;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Sobre Nosotros | HorsePower",

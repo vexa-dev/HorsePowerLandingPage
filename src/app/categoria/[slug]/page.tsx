@@ -9,7 +9,7 @@ import { IconChevronRight, IconSparkles } from "@tabler/icons-react";
 
 const SITIO = process.env.NEXT_PUBLIC_SITIO_URL || "https://horsepower.pe";
 
-export const revalidate = 1800;
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return CATEGORIAS.map((c) => ({ slug: c.slug }));

@@ -10,7 +10,7 @@ import { EstadoVacio } from "@/components/EstadoVacio";
 
 const SITIO = process.env.NEXT_PUBLIC_SITIO_URL || "https://horsepower.pe";
 
-export const revalidate = 1800;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "HorsePower | Casacas, chompas y mochilas de alta resistencia",

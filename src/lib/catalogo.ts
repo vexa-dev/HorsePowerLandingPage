@@ -1,3 +1,4 @@
+import { cache } from "react";
 import "server-only";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -12,9 +13,7 @@ import { FilaCatalogo, aProducto, type Producto } from "./tipos";
  * - Fallback / desarrollo: `src/data/catalogo.csv` versionado en el repo.
  */
 const CSV_URL = process.env.GOOGLE_SHEET_CSV_URL;
-export const REVALIDAR_SEGUNDOS = 60 * 30;
-
-let cache: Promise<Producto[]> | null = null;
+export const REVALIDAR_SEGUNDOS = 60;
 
 async function leerCsvCrudo(): Promise<string> {
   if (CSV_URL) {
@@ -26,37 +25,28 @@ async function leerCsvCrudo(): Promise<string> {
     }
     return res.text();
   }
-  return readFile(join(process.cwd(), "src", "data", "catalogo.csv"), "utf8");
 }
 
-export function cargarCatalogo(): Promise<Producto[]> {
-  if (!cache) {
-    cache = (async () => {
-      const crudo = await leerCsvCrudo();
-      const { data } = Papa.parse<Record<string, string>>(crudo, {
-        header: true,
-        skipEmptyLines: true,
-        transformHeader: (h) => h.trim().toLowerCase(),
-      });
+export const cargarCatalogo = cache(async (): Promise<Producto[]> => {
+  const crudo = await leerCsvCrudo();
+  const { data } = Papa.parse<Record<string, string>>(crudo, {
+    header: true,
+    skipEmptyLines: true,
+    transformHeader: (h) => h.trim().toLowerCase(),
+  });
 
-      const productos: Producto[] = [];
-      const vistos = new Set<string>();
-      for (const fila of data) {
-        const parsed = FilaCatalogo.safeParse(fila);
-        if (!parsed.success || !parsed.data.activo) continue;
-        const p = aProducto(parsed.data);
-        if (vistos.has(p.slug)) continue;
-        vistos.add(p.slug);
-        productos.push(p);
-      }
-      return productos.sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
-    })().catch((err) => {
-      cache = null;
-      throw err;
-    });
+  const productos: Producto[] = [];
+  const vistos = new Set<string>();
+  for (const fila of data) {
+    const parsed = FilaCatalogo.safeParse(fila);
+    if (!parsed.success || !parsed.data.activo) continue;
+    const p = aProducto(parsed.data);
+    if (vistos.has(p.slug)) continue;
+    vistos.add(p.slug);
+    productos.push(p);
   }
-  return cache;
-}
+  return productos.sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
+});
 
 /** Productos con foto — los que se muestran como tarjeta. */
 export async function productosConFoto(): Promise<Producto[]> {
