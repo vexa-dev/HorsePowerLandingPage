@@ -38,11 +38,56 @@ El catálogo sale de un CSV con estas columnas (una fila = un modelo):
 | `destacado_hp` | `si` para mostrarlo en la home |
 
 **Producción:** publica la Sheet (Archivo → Compartir → Publicar en la web → CSV) y
-pon la URL en `GOOGLE_SHEET_CSV_URL`. La web se revalida sola cada 30 min; para
-forzar la actualización inmediata, dispara el **Deploy Hook** de Vercel.
+pon la URL en `GOOGLE_SHEET_CSV_URL`. La web se revalida sola cada 60 s; además,
+con el Apps Script de abajo la actualización es casi instantánea al editar la hoja.
 
 **Sin `GOOGLE_SHEET_CSV_URL`:** se usa `src/data/catalogo.csv` del repo (borrador
 generado por los scripts).
+
+## Actualización automática del catálogo al editar la Sheet
+
+Al editar la Google Sheet, un Google Apps Script llama al endpoint
+`/api/revalidar`, que purga la caché etiquetada `catalogo`. En segundos la web
+sirve los datos nuevos, sin rebuild ni tocar Vercel. El ISR de 60 s queda como
+red de seguridad.
+
+**1. Token.** Genera una cadena larga aleatoria y ponla como variable de entorno
+`REVALIDAR_TOKEN` en Vercel (Project → Settings → Environment Variables, todos
+los entornos) y en `.env.local` para desarrollo.
+
+**2. Apps Script.** En la hoja: **Extensiones → Apps Script**, pega esto y guarda
+(sustituye la URL y el token):
+
+```js
+const REVALIDAR_URL = "https://horsepower.pe/api/revalidar";
+const TOKEN = "EL_MISMO_VALOR_QUE_REVALIDAR_TOKEN";
+const RETARDO_MS = 15000; // espera a que Google republique el CSV
+
+function onCambio() {
+  // debounce: agenda una sola llamada aunque haya varias ediciones seguidas
+  ScriptApp.getProjectTriggers()
+    .filter((t) => t.getHandlerFunction() === "revalidarWeb")
+    .forEach((t) => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger("revalidarWeb").timeBased().after(RETARDO_MS).create();
+}
+
+function revalidarWeb() {
+  ScriptApp.getProjectTriggers()
+    .filter((t) => t.getHandlerFunction() === "revalidarWeb")
+    .forEach((t) => ScriptApp.deleteTrigger(t));
+  UrlFetchApp.fetch(REVALIDAR_URL + "?secret=" + encodeURIComponent(TOKEN), {
+    muteHttpExceptions: true,
+  });
+}
+```
+
+**3. Activador.** En Apps Script → **Activadores → Añadir activador**:
+función `onCambio`, origen *Desde una hoja de cálculo*, evento *Al editar* (o
+*Al cambiar*). Es un activador instalable (no el `onEdit` simple), por eso sí
+puede hacer llamadas externas; la primera ejecución pide autorizar la cuenta.
+
+Prueba manual: `curl "https://horsepower.pe/api/revalidar?secret=TOKEN"` debe
+devolver `{ "revalidated": true, ... }` (y `401` sin token).
 
 ## Scripts de preparación de datos (una sola vez / al agregar fotos)
 

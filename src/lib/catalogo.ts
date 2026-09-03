@@ -18,7 +18,7 @@ export const REVALIDAR_SEGUNDOS = 60;
 async function leerCsvCrudo(): Promise<string> {
   if (CSV_URL) {
     const res = await fetch(CSV_URL, {
-      next: { revalidate: REVALIDAR_SEGUNDOS },
+      next: { revalidate: REVALIDAR_SEGUNDOS, tags: ["catalogo"] },
     });
     if (!res.ok) {
       throw new Error(`No se pudo descargar la Google Sheet (${res.status})`);
