@@ -7,6 +7,8 @@ import { productosPorCategoria } from "@/lib/catalogo";
 import { GrillaConBuscador } from "@/components/GrillaConBuscador";
 import { IconChevronRight, IconSparkles } from "@tabler/icons-react";
 
+const SITIO = process.env.NEXT_PUBLIC_SITIO_URL || "https://horsepower.pe";
+
 export const revalidate = 1800;
 
 export function generateStaticParams() {
@@ -20,9 +22,23 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const categoria = nombreCategoria(slug);
+  const urlCategoria = `${SITIO}/categoria/${slug}`;
+  const descripcion = `Explora el catálogo de ${categoria} de HorsePower Perú. Modelos exclusivos, tallas y colores disponibles para compra directa por WhatsApp.`;
+
   return {
     title: categoria,
-    description: `Explora el catálogo de ${categoria} de HorsePower. Modelos exclusivos, tallas y colores disponibles para compra por WhatsApp.`,
+    description: descripcion,
+    alternates: {
+      canonical: urlCategoria,
+    },
+    openGraph: {
+      type: "website",
+      locale: "es_PE",
+      siteName: "HorsePower",
+      url: urlCategoria,
+      title: `${categoria} | HorsePower`,
+      description: descripcion,
+    },
   };
 }
 
@@ -36,9 +52,36 @@ export default async function CategoriaPage({
 
   const productos = await productosPorCategoria(slug);
   const categoria = nombreCategoria(slug);
+  const urlCategoria = `${SITIO}/categoria/${slug}`;
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: SITIO },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Catálogo",
+        item: `${SITIO}/catalogo-completo`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: categoria,
+        item: urlCategoria,
+      },
+    ],
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c"),
+        }}
+      />
       {/* Breadcrumb */}
       <nav aria-label="Migas de pan" className="mb-6 flex items-center gap-2 text-xs font-medium text-tenue">
         <Link href="/" className="hover:text-texto transition-colors">

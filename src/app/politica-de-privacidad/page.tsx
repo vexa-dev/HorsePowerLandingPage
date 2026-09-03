@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Política de Privacidad",
   description:
     "Conoce cómo protegemos y tratamos tus datos personales al navegar en el catálogo de HorsePower y coordinar pedidos.",
+  alternates: {
+    canonical: "/politica-de-privacidad",
+  },
 };
 
 const EMAIL_CONTACTO =
