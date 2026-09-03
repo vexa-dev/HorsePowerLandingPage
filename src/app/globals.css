@@ -464,3 +464,89 @@ img {
       linear-gradient(90deg, rgb(var(--sombra-rgb) / 0.42), transparent 82%);
   }
 }
+
+/* ─── Animaciones de Carga y Marca HorsePower ────────────────────────────── */
+@keyframes hp-pulse-glow {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px rgb(var(--acento-rgb) / 0));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 4px 22px rgb(var(--acento-rgb) / 0.45));
+  }
+}
+
+@keyframes hp-pulse-ring {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(0.92);
+    opacity: 0.6;
+  }
+}
+
+@keyframes hp-progress-indeterminate {
+  0% {
+    left: -40%;
+    width: 35%;
+  }
+  50% {
+    left: 25%;
+    width: 55%;
+  }
+  100% {
+    left: 100%;
+    width: 35%;
+  }
+}
+
+.hp-loader-logo {
+  animation: hp-pulse-glow 2.6s ease-in-out infinite;
+}
+
+.hp-loader-ring {
+  animation: hp-pulse-ring 2.6s ease-in-out infinite;
+}
+
+.hp-progress-indeterminate {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: var(--acento);
+  border-radius: 9999px;
+  animation: hp-progress-indeterminate 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes hp-pulse-glow-dark {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 10px rgba(94, 210, 227, 0.4));
+  }
+  50% {
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 28px rgba(94, 210, 227, 0.85));
+  }
+}
+
+.hp-loader-logo-dark {
+  animation: hp-pulse-glow-dark 2.4s ease-in-out infinite;
+}
+
+.hp-progress-indeterminate-dark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #0f5b66 0%, #5ed2e3 50%, #0f5b66 100%);
+  box-shadow: 0 0 14px rgba(94, 210, 227, 0.9);
+  border-radius: 9999px;
+  animation: hp-progress-indeterminate 1.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+

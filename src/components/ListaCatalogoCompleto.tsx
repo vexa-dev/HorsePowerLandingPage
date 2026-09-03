@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Fuse from "fuse.js";
@@ -22,6 +22,8 @@ import { BotonWhatsApp } from "./BotonWhatsApp";
 import { EstadoVacio } from "./EstadoVacio";
 import { TarjetaProducto } from "./TarjetaProducto";
 import { useFiltrosCatalogo } from "./useFiltrosCatalogo";
+import { Paginador } from "./Paginador";
+import { SelectorFilas } from "./SelectorFilas";
 import {
   IconSearch,
   IconX,
@@ -39,7 +41,44 @@ export function ListaCatalogoCompleto({
 }) {
   const [vista, setVista] = useState<"tabla" | "grilla">("tabla");
   const [orden, setOrden] = useState<TipoOrden>("destacado");
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [porPagina, setPorPagina] = useState(20);
+  const seccionRef = useRef<HTMLDivElement>(null);
+
   const { filtros, actualizarFiltros, limpiarFiltros } = useFiltrosCatalogo();
+
+  const cambiarFiltros = (nuevosFiltros: typeof filtros) => {
+    actualizarFiltros(nuevosFiltros);
+    setPaginaActual(1);
+  };
+
+  const limpiarTodosFiltros = () => {
+    limpiarFiltros();
+    setPaginaActual(1);
+  };
+
+  const cambiarOrden = (nuevoOrden: TipoOrden) => {
+    setOrden(nuevoOrden);
+    setPaginaActual(1);
+  };
+
+  const cambiarPorPagina = (nuevaCantidad: number) => {
+    setPorPagina(nuevaCantidad);
+    setPaginaActual(1);
+  };
+
+  const cambiarPagina = (nuevaPagina: number) => {
+    setPaginaActual(nuevaPagina);
+    if (seccionRef.current) {
+      const rect = seccionRef.current.getBoundingClientRect();
+      if (rect.top < 80) {
+        window.scrollTo({
+          top: window.scrollY + rect.top - 90,
+          behavior: "smooth",
+        });
+      }
+    }
+  };
 
   const fuse = useMemo(
     () =>
@@ -76,6 +115,14 @@ export function ListaCatalogoCompleto({
     [filtrados, orden],
   );
 
+  const totalItems = resultado.length;
+  const totalPaginas = Math.max(1, Math.ceil(totalItems / porPagina));
+  const paginaSegura = Math.min(paginaActual, totalPaginas);
+
+  const inicio = (paginaSegura - 1) * porPagina;
+  const fin = inicio + porPagina;
+  const productosPaginados = resultado.slice(inicio, fin);
+
   return (
     <div className="lg:grid lg:grid-cols-[minmax(16rem,19rem)_minmax(0,1fr)] lg:items-start lg:gap-8">
       <PanelFiltrosCatalogo
@@ -83,11 +130,15 @@ export function ListaCatalogoCompleto({
         productosParaOpciones={resultadoBusqueda}
         filtros={filtros}
         resultadoCount={resultado.length}
-        onChange={actualizarFiltros}
-        onClear={limpiarFiltros}
+        onChange={cambiarFiltros}
+        onClear={limpiarTodosFiltros}
       />
 
-      <section className="mt-6 min-w-0 lg:mt-0" aria-label="Catálogo completo">
+      <section
+        ref={seccionRef}
+        className="mt-6 min-w-0 lg:mt-0 scroll-mt-24"
+        aria-label="Catálogo completo"
+      >
         {/* Barra de herramientas: Buscador + Orden + Selector de Vista */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <form
@@ -109,7 +160,7 @@ export function ListaCatalogoCompleto({
                 type="search"
                 value={filtros.q}
                 onChange={(event) =>
-                  actualizarFiltros({ ...filtros, q: event.target.value })
+                  cambiarFiltros({ ...filtros, q: event.target.value })
                 }
                 placeholder="Buscar por modelo, categoría, color o talla..."
                 className="min-h-12 w-full rounded-xl border bg-tarjeta pl-10 pr-10 text-sm outline-none transition focus:border-texto focus:ring-2 focus:ring-acento/20"
@@ -117,7 +168,7 @@ export function ListaCatalogoCompleto({
               {filtros.q && (
                 <button
                   type="button"
-                  onClick={() => actualizarFiltros({ ...filtros, q: "" })}
+                  onClick={() => cambiarFiltros({ ...filtros, q: "" })}
                   className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-tenue hover:text-texto"
                   aria-label="Limpiar búsqueda"
                 >
@@ -137,8 +188,8 @@ export function ListaCatalogoCompleto({
               <select
                 id="ordenar-catalogo"
                 value={orden}
-                onChange={(e) => setOrden(e.target.value as TipoOrden)}
-                className="min-h-11 rounded-xl border bg-tarjeta px-3 text-xs font-semibold text-texto outline-none transition hover:border-texto focus:border-texto"
+                onChange={(e) => cambiarOrden(e.target.value as TipoOrden)}
+                className="min-h-11 rounded-xl border border-linea bg-tarjeta px-3 text-xs font-semibold text-texto transition hover:border-texto !outline-none focus:!outline-none focus-visible:!outline-none focus-visible:ring-2 focus-visible:ring-texto/20 cursor-pointer"
               >
                 <option value="destacado">Destacados</option>
                 <option value="precio-asc">Precio: Menor a Mayor</option>
@@ -153,7 +204,7 @@ export function ListaCatalogoCompleto({
               <button
                 type="button"
                 onClick={() => setVista("tabla")}
-                className={`p-1.5 rounded-lg transition ${
+                className={`p-1.5 rounded-lg transition !outline-none focus:!outline-none focus-visible:!outline-none focus-visible:ring-2 focus-visible:ring-texto/20 ${
                   vista === "tabla"
                     ? "bg-texto text-fondo shadow-sm"
                     : "text-tenue hover:text-texto"
@@ -166,7 +217,7 @@ export function ListaCatalogoCompleto({
               <button
                 type="button"
                 onClick={() => setVista("grilla")}
-                className={`p-1.5 rounded-lg transition ${
+                className={`p-1.5 rounded-lg transition !outline-none focus:!outline-none focus-visible:!outline-none focus-visible:ring-2 focus-visible:ring-texto/20 ${
                   vista === "grilla"
                     ? "bg-texto text-fondo shadow-sm"
                     : "text-tenue hover:text-texto"
@@ -180,17 +231,43 @@ export function ListaCatalogoCompleto({
           </div>
         </div>
 
-        {/* Contador de resultados */}
-        <div className="mt-4 flex items-center justify-between">
+        {/* Contador de resultados y Selector superior de filas */}
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs font-medium text-tenue" aria-live="polite">
-            Mostrando <span className="font-bold text-texto">{resultado.length}</span> modelos
+            Mostrando{" "}
+            <span className="font-bold text-texto">
+              {totalItems > 0 ? inicio + 1 : 0}
+            </span>{" "}
+            a{" "}
+            <span className="font-bold text-texto">
+              {Math.min(fin, totalItems)}
+            </span>{" "}
+            de <span className="font-bold text-texto">{totalItems}</span> modelos
+            {totalPaginas > 1 && (
+              <span className="ml-1 text-tenue">
+                (Página {paginaSegura} de {totalPaginas})
+              </span>
+            )}
           </p>
-          <span className="text-[11px] text-tenue hidden sm:inline">
-            Desplaza horizontalmente para ver todos los datos
-          </span>
+
+          <div className="flex items-center gap-3">
+            <SelectorFilas
+              valor={porPagina}
+              opciones={[10, 15, 20, 50]}
+              onChange={cambiarPorPagina}
+              posicion="abajo"
+              etiqueta="Ver:"
+            />
+
+            {vista === "tabla" && (
+              <span className="text-[11px] text-tenue hidden sm:inline border-l border-linea/80 pl-3">
+                Desplaza horizontalmente para ver todos los datos
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Estado vacío o Contenido */}
+        {/* Estado vacío o Contenido Paginado */}
         {resultado.length === 0 ? (
           <div className="mt-6">
             <EstadoVacio
@@ -199,7 +276,7 @@ export function ListaCatalogoCompleto({
               accion={
                 <button
                   type="button"
-                  onClick={limpiarFiltros}
+                  onClick={limpiarTodosFiltros}
                   className="boton-oscuro min-h-11 px-5 py-2.5"
                 >
                   Ver todo el catálogo
@@ -208,9 +285,9 @@ export function ListaCatalogoCompleto({
             />
           </div>
         ) : vista === "grilla" ? (
-          /* Vista Grilla */
+          /* Vista Grilla Paginada */
           <div className="mt-6 grid grid-cols-2 items-stretch gap-3 sm:grid-cols-3 lg:gap-5">
-            {resultado.map((producto, index) => (
+            {productosPaginados.map((producto, index) => (
               <TarjetaProducto
                 key={producto.slug}
                 producto={producto}
@@ -237,7 +314,7 @@ export function ListaCatalogoCompleto({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-linea/60">
-                  {resultado.map((producto) => {
+                  {productosPaginados.map((producto) => {
                     const precio = precioMostrado(producto);
                     const enOferta = producto.precioOferta != null;
 
@@ -373,6 +450,20 @@ export function ListaCatalogoCompleto({
               </table>
             </div>
           </div>
+        )}
+
+        {/* Paginador inferior */}
+        {totalItems > 0 && (
+          <Paginador
+            paginaActual={paginaSegura}
+            totalPaginas={totalPaginas}
+            totalItems={totalItems}
+            itemsPorPagina={porPagina}
+            alCambiarPagina={cambiarPagina}
+            alCambiarItemsPorPagina={cambiarPorPagina}
+            opcionesPorPagina={[10, 15, 20, 50]}
+            nombreItem="modelos"
+          />
         )}
       </section>
     </div>
