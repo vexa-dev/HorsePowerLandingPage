@@ -20,6 +20,7 @@ const DIRECCION =
 export default function LibroReclamacionesPage() {
   const [enviado, setEnviado] = useState(false);
   const [tipo, setTipo] = useState<"reclamo" | "queja">("reclamo");
+  const [declaracionAceptada, setDeclaracionAceptada] = useState(false);
   const [form, setForm] = useState({
     nombre: "",
     documentoTipo: "DNI",
@@ -41,6 +42,7 @@ export default function LibroReclamacionesPage() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!declaracionAceptada) return;
     setEnviado(true);
   }
 
@@ -53,7 +55,8 @@ export default function LibroReclamacionesPage() {
       `• *Dirección:* ${form.direccion}\n` +
       `• *Producto / Monto:* ${form.producto || "N/A"} - S/ ${form.monto || "0"}\n\n` +
       `• *Detalle del ${tipo}:*\n${form.detalle}\n\n` +
-      `• *Pedido concreto:* ${form.pedido || "Conforme a ley"}`,
+      `• *Pedido concreto:* ${form.pedido || "Conforme a ley"}\n\n` +
+      `✓ *Declaración:* Datos verdaderos conforme a Ley N° 29733 (Protección de Datos Personales).`,
   );
 
   const whatsappHref = NUMERO_WHATSAPP
@@ -323,6 +326,30 @@ export default function LibroReclamacionesPage() {
                   className="w-full rounded-xl border bg-tarjeta px-3.5 py-2.5 text-sm outline-none focus:border-texto"
                 />
               </div>
+            </div>
+
+            {/* Casilla de Confirmación y Declaración */}
+            <div className="relative rounded-2xl border border-acento/30 bg-superficie/25 p-5 sm:p-6 transition-colors hover:border-acento/60">
+              <span className="absolute -top-2.5 left-5 bg-tarjeta px-2 text-[11px] sm:text-xs font-black tracking-wider text-acento uppercase">
+                CONFIRMACIÓN Y DECLARACIÓN
+              </span>
+              <label
+                htmlFor="declaracion"
+                className="group flex items-start gap-3.5 cursor-pointer select-none"
+              >
+                <input
+                  id="declaracion"
+                  name="declaracion"
+                  type="checkbox"
+                  required
+                  checked={declaracionAceptada}
+                  onChange={(e) => setDeclaracionAceptada(e.target.checked)}
+                  className="mt-0.5 size-4.5 sm:size-5 shrink-0 rounded border-linea text-acento accent-[#0f5b66] focus:ring-2 focus:ring-acento/30 cursor-pointer"
+                />
+                <span className="text-xs sm:text-sm text-texto leading-relaxed">
+                  Declaro que los datos consignados son verdaderos y autorizo el tratamiento de mis datos personales conforme a la Ley N° 29733.
+                </span>
+              </label>
             </div>
 
             <div className="pt-4">
