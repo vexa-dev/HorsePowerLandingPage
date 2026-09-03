@@ -25,6 +25,7 @@ async function leerCsvCrudo(): Promise<string> {
     }
     return res.text();
   }
+  return readFile(join(process.cwd(), "src", "data", "catalogo.csv"), "utf8");
 }
 
 export const cargarCatalogo = cache(async (): Promise<Producto[]> => {
