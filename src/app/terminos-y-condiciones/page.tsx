@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Términos y Condiciones",
   description:
     "Términos y condiciones generales para el uso del catálogo web y la coordinación de compras en HorsePower.",
+  alternates: {
+    canonical: "/terminos-y-condiciones",
+  },
 };
 
 const DIRECCION =

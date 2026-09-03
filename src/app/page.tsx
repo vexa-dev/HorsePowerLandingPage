@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CATEGORIAS } from "@/lib/tipos";
@@ -7,7 +8,18 @@ import { NavegacionCategorias } from "@/components/NavegacionCategorias";
 import { RevealEnScroll } from "@/components/RevealEnScroll";
 import { EstadoVacio } from "@/components/EstadoVacio";
 
+const SITIO = process.env.NEXT_PUBLIC_SITIO_URL || "https://horsepower.pe";
+
 export const revalidate = 1800;
+
+export const metadata: Metadata = {
+  title: "HorsePower | Casacas, chompas y mochilas de alta resistencia",
+  description:
+    "Catálogo oficial HorsePower Perú: casacas térmicas, chompas, mochilas y complementos de confección duradera. Tienda física en Lima Centro y compras por WhatsApp.",
+  alternates: {
+    canonical: "/",
+  },
+};
 
 export default async function Home() {
   const [destacados, todos] = await Promise.all([
@@ -24,8 +36,79 @@ export default async function Home() {
     nombre,
   }));
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITIO}/#organization`,
+        name: "HorsePower",
+        url: SITIO,
+        logo: `${SITIO}/logo/LogoHorsePower.svg`,
+        description:
+          "Marca peruana de ropa exterior, casacas y mochilas de alta resistencia con tienda física en Lima.",
+        contactPoint: {
+          "@type": "ContactPoint",
+          telephone: "+51 908 843 695",
+          contactType: "customer service",
+          areaServed: "PE",
+          availableLanguage: "es",
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITIO}/#website`,
+        url: SITIO,
+        name: "HorsePower",
+        publisher: { "@id": `${SITIO}/#organization` },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${SITIO}/catalogo-completo?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      },
+      {
+        "@type": "ClothingStore",
+        "@id": `${SITIO}/#store`,
+        name: "HorsePower - Tienda Física Lima",
+        url: SITIO,
+        telephone: "+51 908 843 695",
+        priceRange: "S/ 50 - S/ 400",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "Jr. Andahuaylas Nº 198 Tda. 101",
+          addressLocality: "Lima",
+          addressRegion: "Lima",
+          postalCode: "15001",
+          addressCountry: "PE",
+        },
+        openingHoursSpecification: [
+          {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+            ],
+            opens: "09:00",
+            closes: "20:00",
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <section className="hero-photo relative isolate min-h-[clamp(32rem,calc(100dvh-4.5rem),44rem)] overflow-hidden bg-texto text-texto-inverso">
         <span
           data-hero-sentinel

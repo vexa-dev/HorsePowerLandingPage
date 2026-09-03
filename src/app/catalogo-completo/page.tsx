@@ -5,12 +5,26 @@ import { catalogoCompleto } from "@/lib/catalogo";
 import { ListaCatalogoCompleto } from "@/components/ListaCatalogoCompleto";
 import { IconChevronRight, IconListDetails } from "@tabler/icons-react";
 
+const SITIO = process.env.NEXT_PUBLIC_SITIO_URL || "https://horsepower.pe";
+
 export const revalidate = 1800;
 
 export const metadata: Metadata = {
   title: "Catálogo Completo",
   description:
-    "Explora todos los modelos HorsePower disponibles, con y sin foto. Consulta disponibilidad, tallas y precios por WhatsApp.",
+    "Explora todos los modelos HorsePower disponibles: casacas, chompas, mochilas y accesorios. Consulta disponibilidad, tallas y precios por WhatsApp.",
+  alternates: {
+    canonical: "/catalogo-completo",
+  },
+  openGraph: {
+    type: "website",
+    locale: "es_PE",
+    siteName: "HorsePower",
+    url: `${SITIO}/catalogo-completo`,
+    title: "Catálogo Completo | HorsePower",
+    description:
+      "Explora todos los modelos HorsePower disponibles: casacas, chompas, mochilas y accesorios.",
+  },
 };
 
 export default async function CatalogoCompletoPage() {
@@ -18,8 +32,28 @@ export default async function CatalogoCompletoPage() {
   const conFoto = productos.filter((p) => p.foto).length;
   const sinFoto = productos.length - conFoto;
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: SITIO },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Catálogo completo",
+        item: `${SITIO}/catalogo-completo`,
+      },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c"),
+        }}
+      />
       {/* Breadcrumb */}
       <nav aria-label="Migas de pan" className="mb-6 flex items-center gap-2 text-xs font-medium text-tenue">
         <Link href="/" className="hover:text-texto transition-colors">

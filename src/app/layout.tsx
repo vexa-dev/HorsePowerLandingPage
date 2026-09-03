@@ -21,17 +21,64 @@ const SITIO =
 export const metadata: Metadata = {
   metadataBase: new URL(SITIO),
   title: {
-    default: "HorsePower - Casacas, chompas y mochilas",
+    default: "HorsePower | Casacas, chompas y mochilas de alta resistencia",
     template: "%s | HorsePower",
   },
   description:
-    "Catálogo HorsePower: casacas, chompas, mochilas, maletas y más. Elige tus productos y coordina tu compra por WhatsApp.",
+    "Catálogo oficial HorsePower Perú: casacas térmicas, chompas, mochilas y complementos de confección duradera. Tienda física en Lima Centro y envíos a todo el Perú por WhatsApp.",
+  keywords: [
+    "casacas hombre lima",
+    "casacas termicas peru",
+    "chompas de invierno",
+    "mochilas urbanas lima",
+    "tienda de casacas lima",
+    "confeccion peruana",
+    "ropa exterior peru",
+    "tienda horsepower jr andahuaylas 198",
+    "compras por whatsapp lima",
+  ],
+  authors: [{ name: "HorsePower Perú" }],
+  creator: "HorsePower",
+  publisher: "HorsePower",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "es_PE",
-    siteName: "HorsePower",
     url: SITIO,
+    siteName: "HorsePower",
+    title: "HorsePower | Casacas, chompas y mochilas de alta resistencia",
+    description:
+      "Catálogo oficial HorsePower Perú: casacas térmicas, chompas, mochilas y accesorios duraderos. Tienda física en Lima y envíos a todo el Perú.",
+    images: [
+      {
+        url: "/hero/horsepower-portada.jpeg",
+        width: 1200,
+        height: 630,
+        alt: "HorsePower Perú - Tienda física y catálogo de ropa exterior",
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "HorsePower | Casacas, chompas y mochilas de alta resistencia",
+    description:
+      "Catálogo oficial HorsePower Perú. Tienda física en Lima y envíos diarios a todo el país vía WhatsApp.",
+    images: ["/hero/horsepower-portada.jpeg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({

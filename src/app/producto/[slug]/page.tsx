@@ -69,24 +69,32 @@ export default async function ProductoPage({
   const precio = precioMostrado(p);
   const urlProducto = `${SITIO}/producto/${p.slug}`;
 
+  const descripcion = `${p.nombre} en HorsePower.${
+    precio ? ` Desde ${formatearSoles(precio)}.` : " Consulta disponibilidad y precio por WhatsApp."
+  } Confección resistente y tienda física en Lima.`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: p.nombre,
+    description: descripcion,
     url: urlProducto,
     sku: p.slug,
     category: nombreCategoria(p.categoria),
     brand: { "@type": "Brand", name: "HorsePower" },
+    itemCondition: "https://schema.org/NewCondition",
     image: p.fotos.length ? p.fotos.map((f) => `${SITIO}/${f}`) : undefined,
-    offers: precio
-      ? {
-          "@type": "Offer",
-          url: urlProducto,
-          priceCurrency: "PEN",
-          price: precio,
-          availability: "https://schema.org/InStock",
-        }
-      : undefined,
+    offers: {
+      "@type": "Offer",
+      url: urlProducto,
+      priceCurrency: "PEN",
+      price: precio ?? 0,
+      availability: "https://schema.org/InStock",
+      seller: {
+        "@type": "Organization",
+        name: "HorsePower",
+      },
+    },
   };
 
   const breadcrumbLd = {

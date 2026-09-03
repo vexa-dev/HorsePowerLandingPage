@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   title: "Políticas de Cambios y Devoluciones",
   description:
     "Conoce las condiciones, plazos y pasos para realizar cambios de prendas, tallas o modelos en HorsePower.",
+  alternates: {
+    canonical: "/cambios-y-devoluciones",
+  },
 };
 
 export default function CambiosPage() {
