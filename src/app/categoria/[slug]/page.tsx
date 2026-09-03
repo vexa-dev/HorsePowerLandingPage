@@ -80,8 +80,8 @@ export default async function CategoriaPage({
               href={`/categoria/${cat.slug}`}
               className={`whitespace-nowrap rounded-xl px-4 py-2 text-xs font-bold transition-all ${
                 esActiva
-                  ? "bg-texto text-texto-inverso shadow-sm"
-                  : "border bg-tarjeta text-tenue hover:border-texto hover:text-texto"
+                  ? "bg-texto !text-white shadow-sm"
+                  : "border border-linea bg-tarjeta text-texto hover:border-texto hover:bg-superficie"
               }`}
             >
               {cat.nombre}

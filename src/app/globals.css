@@ -267,8 +267,8 @@ select:focus-visible {
   color: var(--tenue);
 }
 
-.header-home-scrolled .header-nav-link:hover,
-.header-sticky-page .header-nav-link:hover {
+.header-home-scrolled .header-nav-link:hover:not(.nav-link-active),
+.header-sticky-page .header-nav-link:hover:not(.nav-link-active) {
   background-color: var(--superficie);
   color: var(--texto);
 }
@@ -277,6 +277,13 @@ select:focus-visible {
 .header-sticky-page .nav-link-active {
   background-color: var(--texto);
   color: #ffffff !important;
+}
+
+.header-home-scrolled .nav-link-active:hover,
+.header-sticky-page .nav-link-active:hover {
+  background-color: var(--texto);
+  color: #ffffff !important;
+  opacity: 0.9;
 }
 
 .header-home-scrolled .header-mobile-toggle,

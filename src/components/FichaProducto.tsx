@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCarrito } from "@/lib/carrito";
 import {
-  linkConsultaProducto,
   linkCompraDirectaProducto,
 } from "@/lib/whatsapp";
 import { precioMostrado, type Producto } from "@/lib/tipos";
@@ -12,7 +11,6 @@ import { claseMuestraColor } from "@/lib/catalogo-filtros";
 import { BotonWhatsApp } from "./BotonWhatsApp";
 import { GuiaTallasModal } from "./GuiaTallasModal";
 import {
-  IconBrandWhatsapp,
   IconBuildingStore,
   IconCheck,
   IconHeartHandshake,
@@ -23,67 +21,10 @@ import {
 } from "@tabler/icons-react";
 
 export function FichaProducto({ producto }: { producto: Producto }) {
-  const tienePrecio = precioMostrado(producto) != null;
-
-  return (
-    <div className="space-y-6">
-      {tienePrecio ? (
-        <SelectorYCompra producto={producto} />
-      ) : (
-        <ConsultaSinPrecio producto={producto} />
-      )}
-
-      {/* ─── Caja de Beneficios y Garantías (Trust Box) ───────────────────── */}
-      <CajaBeneficios />
-    </div>
-  );
-}
-
-/** Flujo para productos sin precio en catálogo (consultar disponibilidad) */
-function ConsultaSinPrecio({ producto }: { producto: Producto }) {
-  const [modalTallasAbierto, setModalTallasAbierto] = useState(false);
-
-  return (
-    <div className="space-y-4">
-      <div className="rounded-2xl border border-linea bg-superficie/40 p-4 text-xs text-tenue leading-relaxed">
-        ℹ️ El precio y la disponibilidad de este modelo se confirman directamente con la asesora por WhatsApp antes de ordenar.
-      </div>
-
-      <BotonWhatsApp
-        href={linkConsultaProducto(producto)}
-        origen="ficha"
-        detalle={{ producto: producto.slug }}
-        tamano="lg"
-        ancho="completo"
-        className="w-full justify-center gap-2 font-black !text-white shadow-md hover:shadow-lg"
-      >
-        <IconBrandWhatsapp size={20} className="shrink-0 text-white" />
-        <span>Consultar precio y stock por WhatsApp</span>
-      </BotonWhatsApp>
-
-      {producto.tallas.length > 0 && (
-        <button
-          type="button"
-          onClick={() => setModalTallasAbierto(true)}
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-acento hover:underline"
-        >
-          <IconRulerMeasure size={16} />
-          <span>Ver guía de tallas y medidas</span>
-        </button>
-      )}
-
-      <GuiaTallasModal
-        abierto={modalTallasAbierto}
-        alCerrar={() => setModalTallasAbierto(false)}
-      />
-    </div>
-  );
-}
-
-/** Flujo completo para productos con precio (carrito + compra directa WhatsApp) */
-function SelectorYCompra({ producto }: { producto: Producto }) {
   const router = useRouter();
   const { agregar } = useCarrito();
+
+  const tienePrecio = precioMostrado(producto) != null;
 
   const [color, setColor] = useState(
     producto.colores.length === 1 ? producto.colores[0] : "",
@@ -126,6 +67,13 @@ function SelectorYCompra({ producto }: { producto: Producto }) {
 
   return (
     <div className="space-y-6">
+      {/* Aviso para productos con precio a confirmar */}
+      {!tienePrecio && (
+        <div className="rounded-2xl border border-linea bg-superficie/50 p-3.5 text-xs text-tenue leading-relaxed">
+          ℹ️ Puedes agregar este modelo a tu carrito junto a otros productos o pedirlo directamente. El precio final y stock se coordinan por WhatsApp.
+        </div>
+      )}
+
       {/* Selector de Color */}
       {producto.colores.length > 0 && (
         <fieldset>
@@ -262,7 +210,7 @@ function SelectorYCompra({ producto }: { producto: Producto }) {
               <button
                 type="button"
                 onClick={() => router.push("/carrito")}
-                className="boton-oscuro flex-1 rounded-xl py-2.5 text-xs font-black"
+                className="boton-oscuro flex-1 rounded-xl py-2.5 text-xs font-black !text-white"
               >
                 Ir a pagar al carrito
               </button>
@@ -277,17 +225,21 @@ function SelectorYCompra({ producto }: { producto: Producto }) {
           </div>
         )}
 
-        {/* Botón 2: Pedir directamente por WhatsApp (Compra rápida en 1 clic) */}
+        {/* Botón 2: Pedir directamente por WhatsApp (Un solo icono incorporado por BotonWhatsApp) */}
         <BotonWhatsApp
           href={linkDirectoWhatsApp}
           origen="ficha"
           detalle={{ producto: producto.slug }}
           tamano="lg"
           ancho="completo"
+          conIcono={true}
           className="w-full justify-center gap-2 font-black !text-white shadow-md hover:shadow-lg transition-all"
         >
-          <IconBrandWhatsapp size={20} className="shrink-0 text-white" stroke={2} />
-          <span>Pedir directamente por WhatsApp</span>
+          <span>
+            {tienePrecio
+              ? "Pedir directamente por WhatsApp"
+              : "Consultar precio y stock por WhatsApp"}
+          </span>
         </BotonWhatsApp>
       </div>
 
@@ -295,6 +247,9 @@ function SelectorYCompra({ producto }: { producto: Producto }) {
         abierto={modalTallasAbierto}
         alCerrar={() => setModalTallasAbierto(false)}
       />
+
+      {/* ─── Caja de Beneficios y Garantías (Trust Box) ───────────────────── */}
+      <CajaBeneficios />
     </div>
   );
 }

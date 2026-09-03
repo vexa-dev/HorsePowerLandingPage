@@ -50,10 +50,12 @@ export function linkCompraDirectaProducto({
   const subtotal = precio ? precio * cantidad : undefined;
 
   const lineas = [
-    `Hola HorsePower, quiero pedir este modelo:`,
+    precio
+      ? `Hola HorsePower, quiero pedir este modelo:`
+      : `Hola HorsePower, quiero consultar y pedir este modelo:`,
     `• ${cantidad}x ${producto.nombre}` +
       (detalle ? ` (${detalle})` : "") +
-      (subtotal ? ` — ${formatearSoles(subtotal)}` : ""),
+      (subtotal ? ` — ${formatearSoles(subtotal)}` : " — precio por confirmar"),
     ``,
     `¿Tienen stock disponible para entrega o recojo en tienda?`,
   ];
