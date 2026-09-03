@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCarrito } from "@/lib/carrito";
 import {
@@ -22,7 +23,7 @@ import {
 
 export function FichaProducto({ producto }: { producto: Producto }) {
   const router = useRouter();
-  const { agregar } = useCarrito();
+  const { agregar, cantidadTotal } = useCarrito();
 
   const tienePrecio = precioMostrado(producto) != null;
 
@@ -184,45 +185,49 @@ export function FichaProducto({ producto }: { producto: Producto }) {
         {/* Botón 1: Agregar al carrito */}
         <button
           type="button"
-          onClick={alAgregar}
+          onClick={() => {
+            if (agregado) {
+              router.push("/carrito");
+            } else {
+              alAgregar();
+            }
+          }}
           disabled={faltaElegir}
-          className="boton-oscuro inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-black shadow-sm transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
+          className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-black shadow-sm transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 ${
+            agregado
+              ? "bg-emerald-700 !text-white shadow-md hover:bg-emerald-800"
+              : "boton-oscuro"
+          }`}
         >
-          <IconShoppingBag size={18} stroke={2} />
-          <span>
-            {faltaElegir
-              ? `Elige ${faltantes.join(" y ")} para agregar`
-              : "Agregar al carrito"}
-          </span>
+          {agregado ? (
+            <>
+              <IconCheck size={18} stroke={2.5} />
+              <span>¡Agregado! Ver mi carrito ({cantidadTotal + (agregado ? 0 : cantidad)}) →</span>
+            </>
+          ) : (
+            <>
+              <IconShoppingBag size={18} stroke={2} />
+              <span>
+                {faltaElegir
+                  ? `Elige ${faltantes.join(" y ")} para agregar`
+                  : "Agregar al carrito"}
+              </span>
+            </>
+          )}
         </button>
 
-        {/* Notificación tras agregar al carrito */}
+        {/* Enlace sutil al carrito cuando ya se agregó */}
         {agregado && (
-          <div
-            role="status"
-            className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-xs animate-in fade-in duration-200"
-          >
-            <div className="flex items-center gap-2 font-bold text-emerald-800 dark:text-emerald-300">
-              <IconCheck size={16} stroke={2.5} />
-              <span>¡Producto agregado a tu carrito!</span>
-            </div>
-            <div className="mt-3 flex gap-2">
-              <button
-                type="button"
-                onClick={() => router.push("/carrito")}
-                className="boton-oscuro flex-1 rounded-xl py-2.5 text-xs font-black !text-white"
-              >
-                Ir a pagar al carrito
-              </button>
-              <button
-                type="button"
-                onClick={() => setAgregado(false)}
-                className="rounded-xl border border-linea bg-tarjeta px-4 py-2.5 text-xs font-bold text-tenue hover:bg-superficie"
-              >
-                Seguir viendo
-              </button>
-            </div>
-          </div>
+          <p className="text-center text-xs text-tenue animate-in fade-in duration-150">
+            Prenda guardada en tu pedido.{" "}
+            <button
+              type="button"
+              onClick={() => setAgregado(false)}
+              className="font-bold text-acento hover:underline"
+            >
+              Agregar otra unidad
+            </button>
+          </p>
         )}
 
         {/* Botón 2: Pedir directamente por WhatsApp (Un solo icono incorporado por BotonWhatsApp) */}
@@ -250,6 +255,36 @@ export function FichaProducto({ producto }: { producto: Producto }) {
 
       {/* ─── Caja de Beneficios y Garantías (Trust Box) ───────────────────── */}
       <CajaBeneficios />
+
+      {/* Toast Flotante Elegante */}
+      {agregado && (
+        <aside
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-full bg-texto px-4 py-2.5 text-texto-inverso shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-4 duration-200 border border-white/10 max-w-[92vw]"
+        >
+          <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white text-xs font-bold">
+            ✓
+          </span>
+          <span className="text-xs font-semibold text-white truncate max-w-[150px] sm:max-w-[220px]">
+            {producto.nombre} agregado
+          </span>
+          <Link
+            href="/carrito"
+            className="rounded-full bg-acento px-3.5 py-1 text-xs font-black !text-white hover:bg-acento-hover transition shrink-0"
+          >
+            Ver carrito →
+          </Link>
+          <button
+            type="button"
+            onClick={() => setAgregado(false)}
+            className="text-white/60 hover:text-white text-xs p-1 ml-0.5"
+            aria-label="Cerrar notificación"
+          >
+            ✕
+          </button>
+        </aside>
+      )}
     </div>
   );
 }
