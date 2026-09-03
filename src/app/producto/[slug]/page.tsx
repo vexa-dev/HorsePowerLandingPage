@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { productoPorSlug, slugsConFoto } from "@/lib/catalogo";
+import { productoPorSlug, slugsConFoto, catalogoCompleto } from "@/lib/catalogo";
 import {
   formatearSoles,
   nombreCategoria,
@@ -9,6 +9,8 @@ import {
 } from "@/lib/tipos";
 import { FichaProducto } from "@/components/FichaProducto";
 import { GaleriaProducto } from "@/components/GaleriaProducto";
+import { ProductosRelacionados } from "@/components/ProductosRelacionados";
+import { IconChevronRight } from "@tabler/icons-react";
 
 const SITIO = process.env.NEXT_PUBLIC_SITIO_URL || "https://horsepower.pe";
 
@@ -39,10 +41,6 @@ export async function generateMetadata({
     alternates: {
       canonical: urlProducto,
     },
-    // El metadata de Next.js hace merge superficial: un `openGraph` acá
-    // reemplaza por completo el del layout raíz (no lo combina), así que
-    // hay que repetir siteName/locale/type o se pierden en cada ficha.
-    // https://nextjs.org/docs/app/api-reference/functions/generate-metadata#merging
     openGraph: {
       type: "website",
       locale: "es_PE",
@@ -61,11 +59,14 @@ export default async function ProductoPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const p = await productoPorSlug(slug);
+  const [p, todos] = await Promise.all([
+    productoPorSlug(slug),
+    catalogoCompleto(),
+  ]);
+
   if (!p) notFound();
 
   const precio = precioMostrado(p);
-
   const urlProducto = `${SITIO}/producto/${p.slug}`;
 
   const jsonLd = {
@@ -88,10 +89,6 @@ export default async function ProductoPage({
       : undefined,
   };
 
-  // Google dejó de mostrar el breadcrumb visual en resultados de búsqueda
-  // mobile (ene. 2025), pero sigue usando este dato estructurado para
-  // entender la jerarquía del sitio (AI Overviews incluido). Mismos 2-3
-  // niveles que el breadcrumb visible más abajo.
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -108,10 +105,7 @@ export default async function ProductoPage({
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
-      {/* JSON.stringify no sanitiza `<`; sin el replace, un nombre de producto
-          con "</script>" (viene de la Google Sheet, sin validar) podría inyectar
-          HTML/JS en la página. Ver node_modules/next/dist/docs/01-app/02-guides/json-ld.md */}
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -125,68 +119,89 @@ export default async function ProductoPage({
         }}
       />
 
-      <nav aria-label="Ruta de navegación" className="mb-4 text-sm text-tenue">
-        <ol className="flex flex-wrap items-center gap-1.5">
-          <li>
-            <Link href="/" className="hover:text-texto">
-              Inicio
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link
-              href={`/categoria/${p.categoria}`}
-              className="hover:text-texto"
-            >
-              {nombreCategoria(p.categoria)}
-            </Link>
-          </li>
-          {p.subcategoria && (
-            <>
-              <li aria-hidden="true">/</li>
-              <li>{p.subcategoria}</li>
-            </>
-          )}
-          <li aria-hidden="true">/</li>
-          <li aria-current="page" className="font-medium text-texto">
-            {p.nombre}
-          </li>
-        </ol>
+      {/* Breadcrumb Mejorado */}
+      <nav aria-label="Ruta de navegación" className="mb-6 flex flex-wrap items-center gap-2 text-xs font-semibold text-tenue">
+        <Link href="/" className="hover:text-texto transition-colors">
+          Inicio
+        </Link>
+        <IconChevronRight size={13} aria-hidden="true" />
+        <Link
+          href={`/categoria/${p.categoria}`}
+          className="hover:text-texto transition-colors"
+        >
+          {nombreCategoria(p.categoria)}
+        </Link>
+        {p.subcategoria && (
+          <>
+            <IconChevronRight size={13} aria-hidden="true" />
+            <span className="text-tenue">{p.subcategoria}</span>
+          </>
+        )}
+        <IconChevronRight size={13} aria-hidden="true" />
+        <span aria-current="page" className="font-bold text-texto truncate max-w-[200px] sm:max-w-none">
+          {p.nombre}
+        </span>
       </nav>
 
-      <div className="grid gap-8 md:grid-cols-2">
-        <GaleriaProducto fotos={p.fotos} alt={p.nombre} />
+      {/* Grid Principal: Galería a la izquierda y Detalles a la derecha */}
+      <div className="grid gap-10 lg:grid-cols-12 lg:items-start">
+        {/* Galería (5 columnas en desktop) */}
+        <div className="lg:col-span-6">
+          <GaleriaProducto fotos={p.fotos} alt={p.nombre} />
+        </div>
 
-        <div>
-          <h1 className="texto-display text-2xl">{p.nombre}</h1>
-          {p.genero && <p className="mt-1 text-sm text-tenue">{p.genero}</p>}
-
-          <div className="mt-4">
-            {precio != null ? (
-              <p className="flex items-baseline gap-3">
-                <span className="text-2xl font-bold">
-                  {formatearSoles(precio)}
-                </span>
-                {p.precioOferta != null && p.precio != null && (
-                  <span className="text-tenue line-through">
-                    {formatearSoles(p.precio)}
-                  </span>
-                )}
-              </p>
-            ) : (
-              <p className="text-tenue">Precio: consultar por WhatsApp</p>
+        {/* Detalles e interactividad (6 columnas en desktop) */}
+        <div className="space-y-5 lg:col-span-6">
+          {/* Chips de Categoría y Género */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-superficie px-3 py-1 text-xs font-bold uppercase tracking-wider text-acento border border-linea">
+              {nombreCategoria(p.categoria)}
+            </span>
+            {p.genero && (
+              <span className="rounded-full bg-tarjeta px-3 py-1 text-xs font-bold text-tenue border border-linea">
+                {p.genero}
+              </span>
+            )}
+            {p.precioOferta != null && (
+              <span className="rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 px-3 py-1 text-xs font-black uppercase tracking-wider border border-rose-500/20">
+                En Oferta
+              </span>
             )}
           </div>
 
-          <div className="mt-6">
-            <FichaProducto producto={p} />
+          <h1 className="texto-display text-2xl font-black text-texto sm:text-3xl lg:text-4xl">
+            {p.nombre}
+          </h1>
+
+          {/* Bloque de Precio */}
+          <div>
+            {precio != null ? (
+              <div className="flex items-baseline gap-3">
+                <span className="texto-display text-3xl font-black tracking-tight text-texto sm:text-4xl">
+                  {formatearSoles(precio)}
+                </span>
+                {p.precioOferta != null && p.precio != null && (
+                  <span className="text-base font-bold text-tenue line-through">
+                    {formatearSoles(p.precio)}
+                  </span>
+                )}
+              </div>
+            ) : (
+              <div className="rounded-xl bg-superficie/60 p-3 text-xs font-semibold text-tenue">
+                Precio y disponibilidad a consultar por WhatsApp
+              </div>
+            )}
           </div>
 
-          <p className="mt-6 text-xs text-tenue">
-            La disponibilidad de tallas y colores se confirma por WhatsApp.
-          </p>
+          {/* Ficha interactiva (colores, tallas, guía, botones y garantías) */}
+          <div className="pt-2">
+            <FichaProducto producto={p} />
+          </div>
         </div>
       </div>
+
+      {/* Sección de Productos Relacionados */}
+      <ProductosRelacionados productoActual={p} productos={todos} />
     </div>
   );
 }

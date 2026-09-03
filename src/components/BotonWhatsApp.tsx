@@ -18,6 +18,7 @@ export function BotonWhatsApp({
   conIcono = true,
   children,
   className = "",
+  onClick,
 }: {
   href: string;
   origen: "carrito" | "ficha" | "catalogo-completo";
@@ -27,13 +28,17 @@ export function BotonWhatsApp({
   conIcono?: boolean;
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noreferrer"
-      onClick={() => eventoWhatsApp(origen, detalle)}
+      onClick={() => {
+        eventoWhatsApp(origen, detalle);
+        onClick?.();
+      }}
       className={
         "boton-acento inline-flex items-center justify-center font-semibold shadow-[0_12px_24px_-18px_var(--acento)] hover:-translate-y-0.5 active:translate-y-0 " +
         CLASES_TAMANO[tamano] +

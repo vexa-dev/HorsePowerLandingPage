@@ -4,7 +4,7 @@ import {
   IconJacket,
   IconLuggage,
   IconShirt,
-  IconToolsKitchen2,
+  IconShoppingBag,
   type IconProps,
 } from "@tabler/icons-react";
 import Link from "next/link";
@@ -16,7 +16,7 @@ const ICONOS: Record<CategoriaSlug, IconoCategoria> = {
   "casacas-y-chompas": IconJacket,
   "mochilas-y-morrales": IconBackpack,
   "maletas-y-viaje": IconLuggage,
-  "loncheras-y-accesorios": IconToolsKitchen2,
+  "loncheras-y-accesorios": IconShoppingBag,
 };
 
 export interface CategoriaHome {
@@ -30,33 +30,41 @@ export function NavegacionCategorias({
   categorias: CategoriaHome[];
 }) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-linea bg-tarjeta md:overflow-visible">
-      <div className="grid min-w-max grid-flow-col auto-cols-[minmax(13.5rem,1fr)] md:min-w-0 md:grid-cols-4 md:grid-flow-row">
-        {categorias.map((categoria) => {
-          const Icono = ICONOS[categoria.slug as CategoriaSlug] ?? IconShirt;
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+      {categorias.map((categoria) => {
+        const Icono = ICONOS[categoria.slug as CategoriaSlug] ?? IconShirt;
 
-          return (
-            <Link
-              key={categoria.slug}
-              href={`/categoria/${categoria.slug}`}
-              className="group relative flex min-h-28 items-center gap-3 border-r border-linea px-5 py-4 last:border-r-0 hover:bg-superficie"
-            >
-              <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-superficie text-acento transition-colors group-hover:bg-acento group-hover:text-texto-inverso">
-                <Icono aria-hidden="true" size={22} stroke={1.7} />
+        return (
+          <Link
+            key={categoria.slug}
+            href={`/categoria/${categoria.slug}`}
+            className="group relative flex flex-col justify-between rounded-2xl border border-linea bg-tarjeta p-3.5 sm:p-5 shadow-2xs transition-all duration-200 hover:-translate-y-1 hover:border-acento/40 hover:shadow-md active:translate-y-0"
+          >
+            <div className="flex items-center justify-between">
+              <span className="inline-flex size-11 items-center justify-center rounded-xl bg-superficie text-acento transition-colors duration-200 group-hover:bg-acento group-hover:text-texto-inverso">
+                <Icono aria-hidden="true" size={22} stroke={1.8} />
               </span>
-              <span className="min-w-0 flex-1 text-sm font-bold leading-tight">
+              <span className="inline-flex size-7 items-center justify-center rounded-full bg-superficie/60 text-tenue transition-colors duration-200 group-hover:bg-acento/10 group-hover:text-acento">
+                <IconArrowUpRight
+                  aria-hidden="true"
+                  size={16}
+                  stroke={2.2}
+                  className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                />
+              </span>
+            </div>
+
+            <div className="mt-3 sm:mt-4">
+              <span className="block text-sm sm:text-base font-bold leading-tight text-texto transition-colors group-hover:text-acento">
                 {categoria.nombre}
               </span>
-              <IconArrowUpRight
-                aria-hidden="true"
-                size={18}
-                stroke={1.8}
-                className="shrink-0 text-tenue transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-acento"
-              />
-            </Link>
-          );
-        })}
-      </div>
+              <span className="mt-1 block text-[11px] sm:text-xs text-tenue">
+                Ver modelos
+              </span>
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 }
