@@ -33,6 +33,34 @@ export function linkConsultaProducto(p: Pick<Producto, "nombre" | "slug">): stri
   );
 }
 
+/** Pedido directo de un producto específico con variantes elegidas. */
+export function linkCompraDirectaProducto({
+  producto,
+  color,
+  talla,
+  cantidad = 1,
+}: {
+  producto: Pick<Producto, "nombre" | "precio" | "precioOferta">;
+  color?: string;
+  talla?: string;
+  cantidad?: number;
+}): string {
+  const detalle = [color, talla].filter(Boolean).join(" / ");
+  const precio = producto.precioOferta ?? producto.precio;
+  const subtotal = precio ? precio * cantidad : undefined;
+
+  const lineas = [
+    `Hola HorsePower, quiero pedir este modelo:`,
+    `• ${cantidad}x ${producto.nombre}` +
+      (detalle ? ` (${detalle})` : "") +
+      (subtotal ? ` — ${formatearSoles(subtotal)}` : ""),
+    ``,
+    `¿Tienen stock disponible para entrega o recojo en tienda?`,
+  ];
+
+  return linkBase(lineas.join("\n"));
+}
+
 /** Mensaje del carrito completo. */
 export function construirMensajeCarrito(
   items: ItemCarrito[],

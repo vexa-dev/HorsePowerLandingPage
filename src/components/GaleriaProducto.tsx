@@ -85,7 +85,7 @@ export function GaleriaProducto({
         onKeyDown={total > 1 ? alPresionarTecla : undefined}
         onTouchStart={total > 1 ? alTocarInicio : undefined}
         onTouchEnd={total > 1 ? alTocarFin : undefined}
-        className="relative aspect-square touch-pan-y overflow-hidden rounded-md border bg-superficie focus-visible:outline focus-visible:outline-2 focus-visible:outline-acento focus-visible:outline-offset-2"
+        className="relative aspect-square touch-pan-y overflow-hidden rounded-3xl border border-linea bg-tarjeta shadow-2xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-acento focus-visible:outline-offset-2"
       >
         <MotionConfig reducedMotion="user">
           <AnimatePresence initial={false} custom={direccion}>
@@ -104,12 +104,8 @@ export function GaleriaProducto({
                 alt={total > 1 ? `${alt} (${i + 1} de ${total})` : alt}
                 fill
                 preload
-                // La página del producto es max-w-5xl con grid de 2 columnas
-                // desde md (768px): la foto ocupa ~45% del contenedor entre
-                // 768-1024px, y se topa en 480px de ahí en adelante (el
-                // contenedor no crece más).
-                sizes="(max-width: 767px) 100vw, (max-width: 1024px) 45vw, 480px"
-                className="object-contain p-3"
+                sizes="(max-width: 767px) 100vw, (max-width: 1024px) 45vw, 520px"
+                className="object-contain p-4 sm:p-6"
               />
             </motion.div>
           </AnimatePresence>
@@ -121,7 +117,7 @@ export function GaleriaProducto({
               type="button"
               onClick={() => ir(i - 1, -1)}
               aria-label="Foto anterior"
-              className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-fondo/80 px-3 py-2 text-lg leading-none hover:bg-fondo"
+              className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex size-9 items-center justify-center rounded-full border border-linea bg-tarjeta/90 text-sm font-bold text-texto shadow-xs backdrop-blur-xs transition hover:bg-superficie active:scale-95"
             >
               ‹
             </button>
@@ -129,14 +125,14 @@ export function GaleriaProducto({
               type="button"
               onClick={() => ir(i + 1, 1)}
               aria-label="Foto siguiente"
-              className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-fondo/80 px-3 py-2 text-lg leading-none hover:bg-fondo"
+              className="absolute right-3 top-1/2 z-10 -translate-y-1/2 flex size-9 items-center justify-center rounded-full border border-linea bg-tarjeta/90 text-sm font-bold text-texto shadow-xs backdrop-blur-xs transition hover:bg-superficie active:scale-95"
             >
               ›
             </button>
             <span
               aria-live="polite"
               aria-atomic="true"
-              className="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-fondo/80 px-2 py-0.5 text-xs"
+              className="absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-texto/75 px-3 py-1 text-[11px] font-bold text-texto-inverso backdrop-blur-md shadow-2xs tabular-nums"
             >
               {i + 1} / {total}
             </span>
@@ -147,7 +143,7 @@ export function GaleriaProducto({
       {total > 1 && (
         <div
           ref={miniaturasRef}
-          className="mt-3 flex gap-2 overflow-x-auto"
+          className="mt-3.5 flex gap-2.5 overflow-x-auto pb-1"
         >
           {fotos.map((f, n) => (
             <button
@@ -158,8 +154,10 @@ export function GaleriaProducto({
               aria-label={`Ver foto ${n + 1} de ${total}`}
               aria-current={n === i ? "true" : undefined}
               className={
-                "relative h-16 w-16 shrink-0 overflow-hidden rounded border " +
-                (n === i ? "border-texto" : "border-linea opacity-70")
+                "relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-2xl border transition-all " +
+                (n === i
+                  ? "border-acento ring-2 ring-acento/20 shadow-xs"
+                  : "border-linea/70 bg-superficie/40 opacity-70 hover:opacity-100")
               }
             >
               <Image
@@ -167,8 +165,8 @@ export function GaleriaProducto({
                 alt=""
                 fill
                 loading="lazy"
-                sizes="64px"
-                className="object-contain p-1"
+                sizes="80px"
+                className="object-contain p-1.5"
               />
             </button>
           ))}
